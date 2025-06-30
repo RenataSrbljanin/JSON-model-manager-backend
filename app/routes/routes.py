@@ -80,10 +80,17 @@ def create_installed_software():
         return jsonify({"errors": ve.messages}), 400
 
 
-@bp.route("/installed_software", methods=["GET"])
-def get_all_software():
+@bp.route("/installed_software_ids", methods=["GET"])
+def get_all_software_ids():
     software_list = InstalledSoftwareModel.query.all()
     return jsonify([s.idn for s in software_list])  # or schema.dump(s, many=True)
+
+
+@bp.route("/installed_software", methods=["GET"])
+def get_all_installed_software_objects()
+    all_software = InstalledSoftwareModel.query.all()
+    schema = InstalledSoftwareSchema(many=True)
+    return jsonify(schema.dump(all_software)), 200
 
 
 @bp.route("/installed_software/<path:idn>", methods=["PUT"])

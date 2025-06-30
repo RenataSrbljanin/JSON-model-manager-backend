@@ -8,6 +8,25 @@
 	},
 	"item": [
 		{
+			"name": "GET all_software_as_objects",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/installed_software",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"installed_software"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "POST /installed_software",
 			"request": {
 				"method": "POST",
@@ -19,7 +38,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"idn\": \"None:0:0>cpe:/a:microsoft:.net_framework:4.8#12345678\",\n  \"computer_idn\": \"None:0:0\",\n  \"cpe_idn\": \"cpe:/a:microsoft:.net_framework:4.8\",\n  \"idn_variant\": \"cpe:/a:microsoft:.net_framework:4.8#1\",\n  \"accepts_credentials\": [],\n  \"compatible_data_types\": [],\n  \"hardware_ids\": [],\n  \"installed_combination\": [\n    [\n      \"cpe:/o:microsoft:windows_server_2016:1803#0\",\n      \"L\"\n    ]\n  ],\n  \"is_database\": \"\",\n  \"local_dependencies\": [],\n  \"network_dependencies\": [],\n  \"network_clients\": [],\n  \"network_servers\": [],\n  \"network_idn\": [\n    0\n  ],\n  \"provides_network_services\": [],\n  \"provides_services\": [],\n  \"provides_user_services\": [],\n  \"max_client_count\": 0,\n  \"person_index\": 0,\n  \"person_group_id\": null,\n  \"requires_hardware_quota\": 1.0,\n  \"requires_hardware_quota_per_client\": 0.0\n}"
+					"raw": "{\n                    \"accepts_credentials\": [\n                        \"admin.0@local#7398f8bc-6851-4e1b-baec-f41a8e58add7\",\n                        \"svc.None:0:0>cpe:/o:microsoft:windows_server_2016:1803#36e1a71a-760d-4b3f-afc5-586d97c47ecf@local#61fd2516-c2a6-4497-9ae6-9ab8d949f033\",\n                        \"admin.1@local#b059f5db-04fd-4a16-9312-6aee9d28b9a7\"\n                    ],\n                    \"compatible_data_types\": [\n                        \"UserAccounts:local\",\n                        \"UserAccounts:domain\"\n                    ],\n                    \"computer_idn\": \"None:0:0\",\n                    \"cpe_idn\": \"cpe:/o:microsoft:windows_server_2016:1803\",\n                    \"hardware_ids\": [],\n                    \"idn\": \"None:0:0>cpe:/o:microsoft:windows_server_2016:1803#36e1a71a-760d-4b3f-afc5-586d97c47ecf\",\n                    \"idn_variant\": \"cpe:/o:microsoft:windows_server_2016:1803#0\",\n                    \"installed_combination\": [],\n                    \"is_database\": \"\",\n                    \"local_dependencies\": [],\n                    \"max_client_count\": 0,\n                    \"network_clients\": [],\n                    \"network_dependencies\": [],\n                    \"network_idn\": [],\n                    \"network_servers\": [],\n                    \"person_group_id\": null,\n                    \"person_index\": 0,\n                    \"provides_network_services\": [\n                        \"RDP\"\n                    ],\n                    \"provides_services\": [],\n                    \"provides_user_services\": [],\n                    \"requires_hardware_quota\": 8,\n                    \"requires_hardware_quota_per_client\": 0\n                }"
 				},
 				"url": {
 					"raw": "http://localhost:5000/installed_software",
@@ -36,19 +55,19 @@
 			"response": []
 		},
 		{
-			"name": "GET /installed_software",
+			"name": "GET /installed_software_ids",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/installed_software",
+					"raw": "http://localhost:5000/installed_software_ids",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5000",
 					"path": [
-						"installed_software"
+						"installed_software_ids"
 					]
 				}
 			},
