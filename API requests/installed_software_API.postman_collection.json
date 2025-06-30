@@ -4,7 +4,8 @@
 		"name": "installed_software_API",
 		"description": "Postman collection for Flask Installed Software API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "1688617"
+		"_exporter_id": "1688617",
+		"_collection_link": "https://www.postman.com/renatasrbljanin/workspace/json-model-manager-backend/collection/1688617-1f1519a8-c131-48d0-8c3a-df5c0157c331?action=share&source=collection_link&creator=1688617"
 	},
 	"item": [
 		{
@@ -38,7 +39,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n                    \"accepts_credentials\": [\n                        \"admin.0@local#7398f8bc-6851-4e1b-baec-f41a8e58add7\",\n                        \"svc.None:0:0>cpe:/o:microsoft:windows_server_2016:1803#36e1a71a-760d-4b3f-afc5-586d97c47ecf@local#61fd2516-c2a6-4497-9ae6-9ab8d949f033\",\n                        \"admin.1@local#b059f5db-04fd-4a16-9312-6aee9d28b9a7\"\n                    ],\n                    \"compatible_data_types\": [\n                        \"UserAccounts:local\",\n                        \"UserAccounts:domain\"\n                    ],\n                    \"computer_idn\": \"None:0:0\",\n                    \"cpe_idn\": \"cpe:/o:microsoft:windows_server_2016:1803\",\n                    \"hardware_ids\": [],\n                    \"idn\": \"None:0:0>cpe:/o:microsoft:windows_server_2016:1803#36e1a71a-760d-4b3f-afc5-586d97c47ecf\",\n                    \"idn_variant\": \"cpe:/o:microsoft:windows_server_2016:1803#0\",\n                    \"installed_combination\": [],\n                    \"is_database\": \"\",\n                    \"local_dependencies\": [],\n                    \"max_client_count\": 0,\n                    \"network_clients\": [],\n                    \"network_dependencies\": [],\n                    \"network_idn\": [],\n                    \"network_servers\": [],\n                    \"person_group_id\": null,\n                    \"person_index\": 0,\n                    \"provides_network_services\": [\n                        \"RDP\"\n                    ],\n                    \"provides_services\": [],\n                    \"provides_user_services\": [],\n                    \"requires_hardware_quota\": 8,\n                    \"requires_hardware_quota_per_client\": 0\n                }"
+					"raw": "{\n        \"accepts_credentials\": [],\n        \"compatible_data_types\": [],\n        \"computer_idn\": \"None:0:3\",\n        \"cpe_idn\": \"cpe:/a:microsoft:internet_information_services:8.5\",\n        \"hardware_ids\": [],\n        \"idn\": \"None:0:3>cpe:/a:microsoft:internet_information_services:8.5#a1b725e6-c767-449c-9728-4f1bb91856ac\",\n        \"idn_variant\": \"cpe:/a:microsoft:internet_information_services:8.5#1\",\n        \"installed_combination\": [\n            [\n                \"cpe:/o:microsoft:windows_server_2016:1803#0\",\n                \"L\"\n            ]\n        ],\n        \"is_database\": \"\",\n        \"local_dependencies\": [\n            \"None:0:3>cpe:/o:microsoft:windows_server_2016:1803#36e1a71a-760d-4b3f-afc5-586d97c47ecf\"\n        ],\n        \"max_client_count\": 0,\n        \"network_clients\": [],\n        \"network_dependencies\": [],\n        \"network_idn\": [],\n        \"network_servers\": [],\n        \"person_group_id\": null,\n        \"person_index\": 0,\n        \"provides_network_services\": [],\n        \"provides_services\": [],\n        \"provides_user_services\": [],\n        \"requires_hardware_quota\": 1,\n        \"requires_hardware_quota_per_client\": 0\n    }"
 				},
 				"url": {
 					"raw": "http://localhost:5000/installed_software",
@@ -75,6 +76,20 @@
 		},
 		{
 			"name": "PUT /installed_software/:idn",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const rawIdn = \"None:0:3>cpe:/a:microsoft:internet_information_services:8.5#a1b725e6-c767-449c-9728-4f1bb91856ac\";\r",
+							"pm.variables.set(\"encodedIdn\", encodeURIComponent(rawIdn));\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"method": "PUT",
 				"header": [
@@ -85,10 +100,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"idn\": \"None:0:0>cpe:/a:microsoft:.net_framework:4.8#12345678\",\n  \"computer_idn\": \"None:0:0\",\n  \"cpe_idn\": \"cpe:/a:microsoft:.net_framework:4.8\",\n  \"idn_variant\": \"cpe:/a:microsoft:.net_framework:4.8#1\",\n  \"accepts_credentials\": [],\n  \"compatible_data_types\": [],\n  \"hardware_ids\": [],\n  \"installed_combination\": [],\n  \"is_database\": \"\",\n  \"local_dependencies\": [],\n  \"network_dependencies\": [],\n  \"network_clients\": [],\n  \"network_servers\": [],\n  \"network_idn\": [0],\n  \"provides_network_services\": [],\n  \"provides_services\": [],\n  \"provides_user_services\": [],\n  \"max_client_count\": 0,\n  \"person_index\": 0,\n  \"person_group_id\": null,\n  \"requires_hardware_quota\": 1.0,\n  \"requires_hardware_quota_per_client\": 0.0\n}"
+					"raw": "{\n        \"accepts_credentials\": [],\n        \"compatible_data_types\": [],\n        \"computer_idn\": \"None:0:3\",\n        \"cpe_idn\": \"cpe:/a:microsoft:internet_information_services:8.5\",\n        \"hardware_ids\": [],\n        \"idn\": \"None:0:3>cpe:/a:microsoft:internet_information_services:8.5#a1b725e6-c767-449c-9728-4f1bb91856ac\",\n        \"idn_variant\": \"cpe:/a:microsoft:internet_information_services:8.5#1\",\n        \"installed_combination\": [\n            [\n                \"cpe:/o:microsoft:windows_server_2016:1803#0\",\n                \"L\"\n            ]\n        ],\n        \"is_database\": \"\",\n        \"local_dependencies\": [\n            \"None:0:3>cpe:/o:microsoft:windows_server_2016:1803#36e1a71a-760d-4b3f-afc5-586d97c47ecf\"\n        ],\n        \"max_client_count\": 5,\n        \"network_clients\": [],\n        \"network_dependencies\": [],\n        \"network_idn\": [],\n        \"network_servers\": [],\n        \"person_group_id\": null,\n        \"person_index\": 0,\n        \"provides_network_services\": [],\n        \"provides_services\": [],\n        \"provides_user_services\": [],\n        \"requires_hardware_quota\": 1,\n        \"requires_hardware_quota_per_client\": 0\n    }"
 				},
 				"url": {
-					"raw": "http://localhost:5000/installed_software/None%3A0%3A0%3Ecpe%3A%2Fa%3Amicrosoft%3A.net_framework%3A4.8%2312345678",
+					"raw": "http://localhost:5000/installed_software/{{encodedIdn}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -96,7 +111,7 @@
 					"port": "5000",
 					"path": [
 						"installed_software",
-						"None%3A0%3A0%3Ecpe%3A%2Fa%3Amicrosoft%3A.net_framework%3A4.8%2312345678"
+						"{{encodedIdn}}"
 					]
 				}
 			},
@@ -104,11 +119,34 @@
 		},
 		{
 			"name": "DELETE /installed_software/:idn",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const rawIdn = \"None:0:3>cpe:/a:microsoft:internet_information_services:8.5#a1b725e6-c767-449c-9728-4f1bb91856ac\";\r",
+							"pm.variables.set(\"encodedIdn\", encodeURIComponent(rawIdn));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/installed_software/None%3A0%3A0%3Ecpe%3A%2Fa%3Amicrosoft%3A.net_framework%3A4.8%2312345678",
+					"raw": "http://localhost:5000/installed_software/{{encodedIdn}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -116,7 +154,7 @@
 					"port": "5000",
 					"path": [
 						"installed_software",
-						"None%3A0%3A0%3Ecpe%3A%2Fa%3Amicrosoft%3A.net_framework%3A4.8%2312345678"
+						"{{encodedIdn}}"
 					]
 				}
 			},

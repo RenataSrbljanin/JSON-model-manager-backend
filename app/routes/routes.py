@@ -87,7 +87,7 @@ def get_all_software_ids():
 
 
 @bp.route("/installed_software", methods=["GET"])
-def get_all_installed_software_objects()
+def get_all_installed_software_objects():
     all_software = InstalledSoftwareModel.query.all()
     schema = InstalledSoftwareSchema(many=True)
     return jsonify(schema.dump(all_software)), 200
@@ -98,6 +98,9 @@ def update_installed_software(idn):
     try:
         data = request.get_json()
         validated = schema.load(data)
+
+        # if idn != validated["idn"]:
+        #     return jsonify({"error": "IDN in URL does not match payload"}), 400
 
         software = InstalledSoftwareModel.query.filter_by(idn=idn).first()
         if not software:
@@ -121,4 +124,4 @@ def delete_installed_software(idn):
 
     db.session.delete(software)
     db.session.commit()
-    return jsonify({"message": "Software deleted"}), 200
+    return jsonify({"message": f"Software deleted"}), 200
