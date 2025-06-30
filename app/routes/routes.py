@@ -84,3 +84,34 @@ def create_installed_software():
 def get_all_software():
     software_list = InstalledSoftwareModel.query.all()
     return jsonify([s.idn for s in software_list])  # or schema.dump(s, many=True)
+
+
+@bp.route("/installed_software/<string:idn>", methods=["PUT"])
+def update_installed_software(idn):
+    try:
+        data = request.get_json()
+        validated = schema.load(data)
+
+        software = InstalledSoftwareModel.query.filter_by(idn=idn).first()
+        if not software:
+            return jsonify({"error": "Software not found"}), 404
+
+        for key, value in validated.items():
+            setattr(software, key, value)
+
+        db.session.commit()
+        return jsonify({"message": "Software updated!"}), 200
+
+    except ValidationError as ve:
+        return jsonify({"errors": ve.messages}), 400
+
+
+@bp.route("/installed_software/<string:idn>", methods=["DELETE"])
+def delete_installed_software(idn):
+    software = InstalledSoftwareModel.query.filter_by(idn=idn).first()
+    if not software:
+        return jsonify({"error": "Software not found"}), 404
+
+    db.session.delete(software)
+    db.session.commit()
+    return jsonify({"message": "Software deleted"}), 200

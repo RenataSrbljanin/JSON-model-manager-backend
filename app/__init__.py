@@ -1,6 +1,7 @@
 from flask import Flask
 from .models import db
-from app.routes import bp
+from app.routes.routes import bp
+from app.routes.url_encoder_routes import url_encoder_bp
 
 
 def create_app():
@@ -18,6 +19,7 @@ def create_app():
     # from .routes import main
 
     app.register_blueprint(bp)
+    app.register_blueprint(url_encoder_bp)
 
     with app.app_context():
         db.create_all()  # Auto-creates tables
