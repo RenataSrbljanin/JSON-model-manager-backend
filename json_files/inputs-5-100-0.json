@@ -1,0 +1,103 @@
+{
+    "data_collections": [
+        {
+            "data_type": "FinancialData",
+            "database_stored": true,
+            "idn": "FinancialData:internal",
+            "person_mode": "DataPersonMode.PerGroup",
+            "protection_level": 5,
+            "service_mode": "DataServiceMode.PerOrganization",
+            "services": [],
+            "software_mode": "DataSoftwareMode.PerDatabase",
+            "supported_people_groups": [
+                "ceo:ceo",
+                "ceo:financial"
+            ]
+        },
+        {
+            "data_type": "FinancialData",
+            "database_stored": true,
+            "idn": "FinancialData:banking",
+            "person_mode": "DataPersonMode.PerOrganization",
+            "protection_level": 4,
+            "service_mode": "DataServiceMode.PerService",
+            "services": [
+                "Internet_banking"
+            ],
+            "software_mode": "DataSoftwareMode.PerDatabase",
+            "supported_people_groups": [
+                "ceo:financial",
+                "developer:windows:senior",
+                "finance:banking"
+            ]
+        },
+        {
+            "data_type": "Emails",
+            "database_stored": true,
+            "idn": "Emails",
+            "person_mode": "DataPersonMode.PerPerson",
+            "protection_level": 2,
+            "service_mode": "DataServiceMode.PerOrganization",
+            "services": [],
+            "software_mode": "DataSoftwareMode.PerServer",
+            "supported_people_groups": [
+                "admin",
+                "ceo:financial",
+                "ceo:ceo",
+                "developer:windows:senior",
+                "finance:banking"
+            ]
+        },
+        {
+            "data_type": "SourceCode",
+            "database_stored": false,
+            "idn": "SourceCode:internet_banking",
+            "person_mode": "DataPersonMode.PerPerson",
+            "protection_level": 4,
+            "service_mode": "DataServiceMode.PerOrganization",
+            "services": [],
+            "software_mode": "DataSoftwareMode.PerOrganization",
+            "supported_people_groups": [
+                "developer:windows:senior"
+            ]
+        }
+    ],
+    "employee_groups": {
+        "admin": {
+            "admin": 2
+        },
+        "ceo": {
+            "ceo:ceo": 3,
+            "ceo:financial": 2
+        },
+        "developer:windows": {
+            "developer:windows:senior": 8
+        },
+        "finance": {
+            "finance:banking": 85
+        }
+    },
+    "network_policies": [
+        {
+            "is_optional": false,
+            "objectsA_selector": "item.is_server_software()",
+            "objectsB_selector": "not item.is_server_software()",
+            "policy_type": "RequireDistinctNetworksForSets"
+        },
+        {
+            "is_optional": false,
+            "objectsA_selector": "not any(item.provides_services) and not item.is_internet_connection()",
+            "objectsB_selector": "item.is_internet_connection()",
+            "policy_type": "RequireDistinctNetworksForSets"
+        },
+        {
+            "is_optional": false,
+            "objectsA_selector": "'cpe:/a:microsoft:active_directory:' in item.idn",
+            "objectsB_selector": "'cpe:/a:microsoft:exchange_server:' in item.idn",
+            "policy_type": "RequireSameNetworksForSets"
+        }
+    ],
+    "provided_external_services": [
+        "Internet_banking"
+    ]
+}
