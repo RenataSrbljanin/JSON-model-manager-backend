@@ -86,7 +86,7 @@ def get_all_software():
     return jsonify([s.idn for s in software_list])  # or schema.dump(s, many=True)
 
 
-@bp.route("/installed_software/<string:idn>", methods=["PUT"])
+@bp.route("/installed_software/<path:idn>", methods=["PUT"])
 def update_installed_software(idn):
     try:
         data = request.get_json()
@@ -106,7 +106,7 @@ def update_installed_software(idn):
         return jsonify({"errors": ve.messages}), 400
 
 
-@bp.route("/installed_software/<string:idn>", methods=["DELETE"])
+@bp.route("/installed_software/<path:idn>", methods=["DELETE"])
 def delete_installed_software(idn):
     software = InstalledSoftwareModel.query.filter_by(idn=idn).first()
     if not software:
