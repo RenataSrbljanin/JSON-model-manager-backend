@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.models.firewall_rule import FirewallRule
+from app.models.firawall_rule import FirewallRule
 from app.schemas.firewall_rule_schema import FirewallRuleSchema
 from app.extensions import db
 

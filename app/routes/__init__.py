@@ -11,5 +11,5 @@ def register_routes(app):
     app.register_blueprint(computer_bp)
     app.register_blueprint(credential_bp)
     app.register_blueprint(data_model_bp)
-    app.reregister_blueprint(firewall_rule_bp)
-    app.reregister_blueprint(software_data_link_bp)
+    app.register_blueprint(firewall_rule_bp)
+    app.register_blueprint(software_data_link_bp)
