@@ -130,8 +130,8 @@ JSON-model-manager-backend/
 </table>
 ## 🧰 Installation
 
-<pre><code>git clone https://github.com/your-username/json-model-manager.git
-cd json-model-manager
+<pre><code>git clone https://github.com/RenataSrbljanin/JSON-model-manager-backend
+cd json-model-manager-backend
 python -m venv venv
 source venv/bin/activate     # or venv\Scripts\activate on Windows
 pip install -r requirements.txt
