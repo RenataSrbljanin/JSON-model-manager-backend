@@ -43,3 +43,23 @@ JSON-model-manager-backend/
 ├── requirements.txt            # Python dependencies
 └── run.py                      # Entrypoint
 ```
+
+API Endpoints Overview
+/api/computers
+Method Endpoint Description
+GET / Get all computers
+GET /<idn> Get a specific computer by ID
+POST / Create a new computer
+PUT /<idn> Update existing computer
+DELETE /<idn> Delete computer by ID
+
+/api/installed-software
+Standard CRUD operations for managing installed software objects.
+
+/software-data-links
+Method Endpoint Description
+GET / Get all software-data links
+GET /<software_idn>/<data_type_id> Get one by composite key
+POST / Create a new link
+PUT /<software_idn>/<data_type_id> Update existing link
+DELETE /<software_idn>/<data_type_id> Delete link
