@@ -44,22 +44,87 @@ JSON-model-manager-backend/
 └── run.py                      # Entrypoint
 ```
 
-API Endpoints Overview
-/api/computers
-Method Endpoint Description
-GET / Get all computers
-GET /<idn> Get a specific computer by ID
-POST / Create a new computer
-PUT /<idn> Update existing computer
-DELETE /<idn> Delete computer by ID
+## 🔌 API Endpoints Overview
 
-/api/installed-software
-Standard CRUD operations for managing installed software objects.
+<h3>/api/computers</h3>
 
-/software-data-links
-Method Endpoint Description
-GET / Get all software-data links
-GET /<software_idn>/<data_type_id> Get one by composite key
-POST / Create a new link
-PUT /<software_idn>/<data_type_id> Update existing link
-DELETE /<software_idn>/<data_type_id> Delete link
+<table>
+  <thead>
+    <tr>
+      <th>Method</th>
+      <th>Endpoint</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>GET</code></td>
+      <td><code>/</code></td>
+      <td>Get all computers</td>
+    </tr>
+    <tr>
+      <td><code>GET</code></td>
+      <td><code>/&lt;idn&gt;</code></td>
+      <td>Get a specific computer by ID</td>
+    </tr>
+    <tr>
+      <td><code>POST</code></td>
+      <td><code>/</code></td>
+      <td>Create a new computer</td>
+    </tr>
+    <tr>
+      <td><code>PUT</code></td>
+      <td><code>/&lt;idn&gt;</code></td>
+      <td>Update existing computer</td>
+    </tr>
+    <tr>
+      <td><code>DELETE</code></td>
+      <td><code>/&lt;idn&gt;</code></td>
+      <td>Delete computer by ID</td>
+    </tr>
+  </tbody>
+</table>
+
+<br />
+
+<h3>/api/installed-software</h3>
+
+<p>Standard CRUD operations for managing installed software objects:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Method</th>
+      <th>Endpoint</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>GET</code></td><td><code>/</code></td><td>Get all software entries</td></tr>
+    <tr><td><code>GET</code></td><td><code>/&lt;idn&gt;</code></td><td>Get one software entry by ID</td></tr>
+    <tr><td><code>POST</code></td><td><code>/</code></td><td>Create new software entry</td></tr>
+    <tr><td><code>PUT</code></td><td><code>/&lt;idn&gt;</code></td><td>Update existing software entry</td></tr>
+    <tr><td><code>DELETE</code></td><td><code>/&lt;idn&gt;</code></td><td>Delete software entry</td></tr>
+  </tbody>
+</table>
+
+<br />
+
+<h3>/software-data-links</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Method</th>
+      <th>Endpoint</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>GET</code></td><td><code>/</code></td><td>Get all software-data links</td></tr>
+    <tr><td><code>GET</code></td><td><code>/&lt;software_idn&gt;/&lt;data_type_id&gt;</code></td><td>Get one by composite key</td></tr>
+    <tr><td><code>POST</code></td><td><code>/</code></td><td>Create a new link</td></tr>
+    <tr><td><code>PUT</code></td><td><code>/&lt;software_idn&gt;/&lt;data_type_id&gt;</code></td><td>Update existing link</td></tr>
+    <tr><td><code>DELETE</code></td><td><code>/&lt;software_idn&gt;/&lt;data_type_id&gt;</code></td><td>Delete link</td></tr>
+  </tbody>
+</table>
