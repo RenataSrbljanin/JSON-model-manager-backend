@@ -15,9 +15,11 @@ def get_all_software_data_links():
     return jsonify(schema.dump(links, many=True))
 
 
-@software_data_link_bp.route("/<string:software_idn>", methods=["GET"])
-def get_software_data_link(software_idn):
-    link = SoftwareDataLink.query.get_or_404(software_idn)
+@software_data_link_bp.route(
+    "/<string:software_idn>/<string:data_type_id>", methods=["GET"]
+)
+def get_software_data_link(software_idn, data_type_id):
+    link = SoftwareDataLink.query.get_or_404((software_idn, data_type_id))
     return jsonify(schema.dump(link))
 
 
@@ -33,9 +35,11 @@ def create_software_data_link():
     return jsonify(schema.dump(new_link)), 201
 
 
-@software_data_link_bp.route("/<string:software_idn>", methods=["PUT"])
-def update_software_data_link(software_idn):
-    link = SoftwareDataLink.query.get_or_404(software_idn)
+@software_data_link_bp.route(
+    "/<string:software_idn>/<string:data_type_id>", methods=["PUT"]
+)
+def update_software_data_link(software_idn, data_type_id):
+    link = SoftwareDataLink.query.get_or_404((software_idn, data_type_id))
     data = request.get_json()
     errors = schema.validate(data, partial=True)
     if errors:
@@ -46,9 +50,11 @@ def update_software_data_link(software_idn):
     return jsonify(schema.dump(link))
 
 
-@software_data_link_bp.route("/<string:software_idn>", methods=["DELETE"])
-def delete_software_data_link(software_idn):
-    link = SoftwareDataLink.query.get_or_404(software_idn)
+@software_data_link_bp.route(
+    "/<string:software_idn>/<string:data_type_id>", methods=["DELETE"]
+)
+def delete_software_data_link(software_idn, data_type_id):
+    link = SoftwareDataLink.query.get_or_404((software_idn, data_type_id))
     db.session.delete(link)
     db.session.commit()
     return jsonify({"message": "Deleted"}), 204
