@@ -29,7 +29,7 @@
 ## 📁 Project Structure
 
 ```plaintext
-your-project/
+JSON-model-manager-backend/
 │
 ├── app/
 │   ├── models/                 # SQLAlchemy models
