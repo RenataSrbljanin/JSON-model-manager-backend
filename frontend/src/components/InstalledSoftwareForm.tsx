@@ -1,5 +1,7 @@
 // components/InstalledSoftwareForm.tsx
 import { useState } from "react";
+import { getDataLinksBySoftwareId } from "../api/softwareDataLinks";
+import { useEffect as reactUseEffect } from "react";
 
 type InstalledSoftware = {
   idn: string;
@@ -33,6 +35,20 @@ type Props = {
 
 export default function InstalledSoftwareForm({ software, onSubmit }: Props) {
   const [formData, setFormData] = useState(software);
+  const [dataLinks, setDataLinks] = useState<string[]>([]);
+
+  // Use the real React useEffect
+  reactUseEffect(() => {
+    async function fetchLinks() {
+      const links = await getDataLinksBySoftwareId(software.idn);
+      setDataLinks(
+        (links as { data_type_id: string }[]).map(
+          (link: { data_type_id: string }) => link.data_type_id
+        )
+      );
+    }
+    fetchLinks();
+  }, [software.idn]);
 
   const handleChange = (field: keyof InstalledSoftware, value: any) => {
     if (field === "computer_idn") return; // prevent change
@@ -50,6 +66,10 @@ export default function InstalledSoftwareForm({ software, onSubmit }: Props) {
       {/* <div>
         <strong>Computer IDN:</strong> {formData.computer_idn}
       </div> */}
+      <div>
+        <strong>Data Types Linked:</strong>{" "}
+        {dataLinks.length > 0 ? dataLinks.join(", ") : "None"}
+      </div>
       <div>Computer IDN: {formData.computer_idn}</div>
 
       <label>
@@ -65,3 +85,6 @@ export default function InstalledSoftwareForm({ software, onSubmit }: Props) {
     </form>
   );
 }
+// function useEffect(arg0: () => void, arg1: string[]) {
+//   throw new Error("Function not implemented.");
+// }

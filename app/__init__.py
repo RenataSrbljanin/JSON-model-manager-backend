@@ -31,6 +31,10 @@ from .extensions import db, bcrypt, jwt, cors
 from .routes import register_routes
 from .config import Config
 
+from app.models.computer import Computer
+from app.models.installed_software import InstalledSoftware
+from app.models.software_data_link import SoftwareDataLink
+
 
 def create_app():
     app = Flask(__name__)
@@ -44,5 +48,9 @@ def create_app():
 
     # Registracija svih ruta (blueprintova)
     register_routes(app)
+
+    # Kreiram tabele ako ne postoje
+    with app.app_context():
+        db.create_all()
 
     return app
