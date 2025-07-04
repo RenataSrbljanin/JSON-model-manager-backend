@@ -22,6 +22,12 @@ def get_one(idn):
     return jsonify(schema.dump(item)), 200
 
 
+@installed_software_bp.route("/computer/<string:computer_idn>", methods=["GET"])
+def get_installed_software_by_computer(computer_idn):
+    items = InstalledSoftware.query.filter_by(computer_idn=computer_idn).all()
+    return jsonify(many_schema.dump(items)), 200
+
+
 @installed_software_bp.route("/", methods=["POST"])
 def create():
     data = request.get_json()
