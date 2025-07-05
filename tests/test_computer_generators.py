@@ -3,7 +3,7 @@
 import re
 import uuid
 import pytest
-from utils.computer_generators import (
+from app.utils.computer_generators import (
     generate_computer_idn,
     generate_software_data_links,
     generate_stored_credentials,
