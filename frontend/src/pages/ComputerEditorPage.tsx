@@ -8,6 +8,7 @@ import {
 } from "../api/installedSoftware";
 import type { Computer } from "../api/computers"; //"../output_models";
 import type { InstalledSoftware } from "../api/installedSoftware";
+import axios from "axios";
 
 export default function ComputerEditorPage({ idn }: { idn: string }) {
   const [computer, setComputer] = useState<Computer | null>(null);
@@ -33,7 +34,18 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
     await updateInstalledSoftware(updatedSoftware.idn, updatedSoftware);
     alert("Software updated");
   };
-
+  const handleSave = async (modifiedData: any) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/save",
+        modifiedData
+      );
+      alert(`Uspešno sačuvano: ${response.data.filename}`);
+    } catch (error) {
+      console.error("Greška pri snimanju:", error);
+      alert("Greška pri čuvanju fajla.");
+    }
+  };
   if (!computer) return <div>Loading...</div>;
 
   return (
@@ -54,6 +66,12 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
           </div>
         ))}
       </div>
+      <button
+        onClick={() => handleSave(computersMap)}
+        className="px-4 py-2 bg-blue-600 text-white rounded mt-4"
+      >
+        Sačuvaj izmene fajla
+      </button>
     </div>
   );
 }

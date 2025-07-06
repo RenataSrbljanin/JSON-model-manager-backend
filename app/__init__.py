@@ -34,6 +34,7 @@ from .config import Config
 from app.models.computer import Computer
 from app.models.installed_software import InstalledSoftware
 from app.models.software_data_link import SoftwareDataLink
+from app.routes.json_routes import json_bp
 
 
 def create_app():
@@ -48,6 +49,9 @@ def create_app():
 
     # Registracija svih ruta (blueprintova)
     register_routes(app)
+
+    # Dodatne rute kao što je /save
+    app.register_blueprint(json_bp)
 
     # Kreiram tabele ako ne postoje
     with app.app_context():
