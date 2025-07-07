@@ -1,32 +1,8 @@
-// components/InstalledSoftwareForm.tsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getDataLinksBySoftwareId } from "../api/softwareDataLinks";
-import { useEffect as reactUseEffect } from "react";
-
-type InstalledSoftware = {
-  idn: string;
-  idn_variant: string;
-  cpe_idn: string;
-  computer_idn: string;
-  compatible_data_types: string[];
-  accepts_credentials: string[];
-  local_dependencies: string[];
-  network_dependencies: string[];
-  network_idn: number[];
-  installed_combination: [string, "L" | "N"][];
-  provides_services: string[];
-  provides_network_services: string[];
-  provides_user_services: string[];
-  max_client_count: number;
-  requires_hardware_quota: number;
-  requires_hardware_quota_per_client: number;
-  is_database: boolean | string;
-  hardware_ids: string[];
-  person_group_id: string | null;
-  person_index: number;
-  network_clients: string[];
-  network_servers: string[];
-};
+import { getSuggestions } from "../api/suggestions";
+import type { Suggestions } from "../api/suggestions";
+import type { InstalledSoftware } from "../api/installedSoftware";
 
 type Props = {
   software: InstalledSoftware;
@@ -36,24 +12,38 @@ type Props = {
 export default function InstalledSoftwareForm({ software, onSubmit }: Props) {
   const [formData, setFormData] = useState(software);
   const [dataLinks, setDataLinks] = useState<string[]>([]);
+  const [suggestions, setSuggestions] = useState<Suggestions | null>(null);
 
-  // Use the real React useEffect
-  reactUseEffect(() => {
+  // Fetch data links
+  useEffect(() => {
     async function fetchLinks() {
       const links = await getDataLinksBySoftwareId(software.idn);
-      setDataLinks(
-        (links as { data_type_id: string }[]).map(
-          (link: { data_type_id: string }) => link.data_type_id
-        )
-      );
+      setDataLinks(links.map((l: any) => l.data_type_id));
     }
     fetchLinks();
   }, [software.idn]);
+
+  // Fetch suggestions for dropdowns
+  useEffect(() => {
+    async function fetchSuggestions() {
+      try {
+        const data = await getSuggestions();
+        setSuggestions(data);
+      } catch (error) {
+        console.error("Failed to fetch suggestions", error);
+      }
+    }
+    fetchSuggestions();
+  }, []);
 
   const handleChange = (field: keyof InstalledSoftware, value: any) => {
     if (field === "computer_idn") return; // prevent change
     setFormData({ ...formData, [field]: value });
   };
+
+  if (!suggestions) {
+    return <div>Loading suggestions...</div>;
+  }
 
   return (
     <form
@@ -63,14 +53,86 @@ export default function InstalledSoftwareForm({ software, onSubmit }: Props) {
       }}
     >
       <h3>Edit Software: {formData.idn}</h3>
-      {/* <div>
-        <strong>Computer IDN:</strong> {formData.computer_idn}
-      </div> */}
+
       <div>
         <strong>Data Types Linked:</strong>{" "}
         {dataLinks.length > 0 ? dataLinks.join(", ") : "None"}
       </div>
+
       <div>Computer IDN: {formData.computer_idn}</div>
+
+      <label>
+        Person Group:
+        <select
+          value={formData.person_group_id ?? ""}
+          onChange={(e) => handleChange("person_group_id", e.target.value)}
+        >
+          <option value="">--Select--</option>
+          {suggestions.person_group_ids.map((pgid) => (
+            <option key={pgid} value={pgid}>
+              {pgid}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <label>
+        Hardware IDs:
+        <select
+          multiple
+          value={formData.hardware_ids}
+          onChange={(e) =>
+            handleChange(
+              "hardware_ids",
+              Array.from(e.target.selectedOptions, (opt) => opt.value)
+            )
+          }
+        >
+          {suggestions.hardware_ids.map((hid) => (
+            <option key={hid} value={hid}>
+              {hid}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label>
+        Accepts Credentials:
+        <select
+          multiple
+          value={formData.accepts_credentials}
+          onChange={(e) =>
+            handleChange(
+              "accepts_credentials",
+              Array.from(e.target.selectedOptions, (opt) => opt.value)
+            )
+          }
+        >
+          {suggestions.credential_ids.map((cid) => (
+            <option key={cid} value={cid}>
+              {cid}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label>
+        Network IDNs:
+        <select
+          multiple
+          value={formData.network_idn.map(String)}
+          onChange={(e) =>
+            handleChange(
+              "network_idn",
+              Array.from(e.target.selectedOptions, (opt) => Number(opt.value))
+            )
+          }
+        >
+          {suggestions.network_idns.map((nid) => (
+            <option key={nid} value={nid}>
+              {nid}
+            </option>
+          ))}
+        </select>
+      </label>
 
       <label>
         Variant:
@@ -80,11 +142,8 @@ export default function InstalledSoftwareForm({ software, onSubmit }: Props) {
           onChange={(e) => handleChange("idn_variant", e.target.value)}
         />
       </label>
-      {/* Add more fields here as needed */}
+
       <button type="submit">Save</button>
     </form>
   );
 }
-// function useEffect(arg0: () => void, arg1: string[]) {
-//   throw new Error("Function not implemented.");
-// }

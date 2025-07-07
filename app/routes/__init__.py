@@ -5,6 +5,7 @@ from .data_model_routes import data_model_bp
 from .firewall_rule_routes import firewall_rule_bp
 from .software_data_link_routes import software_data_link_bp
 from .upload_routes import upload_bp
+from .suggestions import suggestions_bp
 
 
 def register_routes(app):
@@ -15,3 +16,4 @@ def register_routes(app):
     app.register_blueprint(data_model_bp)
     app.register_blueprint(firewall_rule_bp)
     app.register_blueprint(software_data_link_bp)
+    app.register_blueprint(suggestions_bp)

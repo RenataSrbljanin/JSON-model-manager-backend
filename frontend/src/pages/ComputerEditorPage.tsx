@@ -67,7 +67,16 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
         ))}
       </div>
       <button
-        onClick={() => handleSave(computersMap)}
+        onClick={() =>
+          handleSave({
+            [computer.idn]: {
+              ...computer,
+              installed_software: Object.fromEntries(
+                softwareList.map((s) => [s.idn, s])
+              ),
+            },
+          })
+        }
         className="px-4 py-2 bg-blue-600 text-white rounded mt-4"
       >
         Sačuvaj izmene fajla

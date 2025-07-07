@@ -3,6 +3,7 @@ import os
 import json
 from datetime import datetime
 from flask import Blueprint
+from app.models.computer import Computer
 
 json_bp = Blueprint("json_routes", __name__)
 
@@ -29,5 +30,18 @@ def save_modified_json():
 
         return jsonify({"message": "File saved", "filename": filename}), 200
 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@json_bp.route("/export", methods=["GET"])
+def export_current_data():
+    try:
+        # Ovde ide konverzija iz baze u JSON format, npr.:
+        computers = Computer.query.all()
+        result = {}
+        for comp in computers:
+            result[comp.idn] = comp.to_dict()  # pretpostavljamo da postoji to_dict()
+        return jsonify(result), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

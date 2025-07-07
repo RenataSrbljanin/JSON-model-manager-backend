@@ -140,3 +140,34 @@ class InstalledSoftware(db.Model):
     person_index = db.Column(db.Integer, nullable=False)
     network_clients = db.Column(db.JSON, nullable=False)
     network_servers = db.Column(db.JSON, nullable=False)
+
+    def to_dict(self):
+        return {
+            "idn": self.idn,
+            "idn_variant": self.idn_variant,
+            "cpe_idn": self.cpe_idn,
+            "computer_idn": self.computer_idn,
+            "compatible_data_types": self.compatible_data_types,
+            "accepts_credentials": self.accepts_credentials,
+            "local_dependencies": self.local_dependencies,
+            "network_dependencies": self.network_dependencies,
+            "network_idn": self.network_idn,
+            "installed_combination": self.installed_combination,
+            "provides_services": self.provides_services,
+            "provides_network_services": self.provides_network_services,
+            "provides_user_services": self.provides_user_services,
+            "max_client_count": self.max_client_count,
+            "requires_hardware_quota": self.requires_hardware_quota,
+            "requires_hardware_quota_per_client": self.requires_hardware_quota_per_client,
+            "is_database": self.is_database,
+            "hardware_ids": self.hardware_ids,
+            "person_group_id": self.person_group_id,
+            "person_index": self.person_index,
+            "network_clients": self.network_clients,
+            "network_servers": self.network_servers,
+            "stored_credentials": self.stored_credentials,
+            "software_data_links": self.software_data_links,
+            "software_idn_mapping": self.software_idn_mapping,
+            "provides_hardware_quota": self.provides_hardware_quota,
+            "used_hardware_quota": self.used_hardware_quota,
+        }

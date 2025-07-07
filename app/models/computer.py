@@ -13,3 +13,16 @@ class Computer(db.Model):
     network_idn = db.Column(db.JSON, nullable=False)
     provides_hardware_quota = db.Column(db.Float, nullable=False)
     used_hardware_quota = db.Column(db.Float, nullable=False)
+
+    def to_dict(self):
+        return {
+            "idn": self.idn,
+            "data": self.data,
+            "installed_software_idns": self.installed_software_idns,
+            "stored_credentials": self.stored_credentials,
+            "software_data_links": self.software_data_links,
+            "software_idn_mapping": self.software_idn_mapping,
+            "network_idn": self.network_idn,
+            "provides_hardware_quota": self.provides_hardware_quota,
+            "used_hardware_quota": self.used_hardware_quota,
+        }
