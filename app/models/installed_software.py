@@ -140,6 +140,11 @@ class InstalledSoftware(db.Model):
     person_index = db.Column(db.Integer, nullable=False)
     network_clients = db.Column(db.JSON, nullable=False)
     network_servers = db.Column(db.JSON, nullable=False)
+    stored_credentials = db.Column(db.JSON, nullable=False)
+    software_data_links = db.Column(db.JSON, nullable=False)
+    software_idn_mapping = db.Column(db.JSON, nullable=False)
+    provides_hardware_quota = db.Column(db.Float, nullable=False)
+    used_hardware_quota = db.Column(db.Float, nullable=False)
 
     def to_dict(self):
         return {

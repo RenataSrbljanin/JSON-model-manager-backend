@@ -1,10 +1,10 @@
 # routes/suggestions.py
 from flask import Blueprint, jsonify
-from models.helpers import get_all_computers, get_all_installed_software
-from models.data_model import DataModel
-from models.credential import Credential
-from models.firawall_rule import FirewallRule
-from models.software_data_link import SoftwareDataLink
+from app.models.helpers import get_all_computers, get_all_installed_software
+from app.models.data_model import DataModel
+from app.models.credential import Credential
+from app.models.firewall_rule import FirewallRule
+from app.models.software_data_link import SoftwareDataLink
 from app.extensions import db
 
 suggestions_bp = Blueprint("suggestions", __name__)
@@ -28,8 +28,10 @@ def get_suggestions():
         "stored_credentials": collect_unique("stored_credentials", computers),
         "hardware_ids": collect_unique("hardware_ids", software),
         "network_ids": sorted(
-            list({nid for s in software for nid in s.get("network_idn", [])})
-            | {nid for c in computers for nid in c.get("network_idn", [])}
+            list(
+                set(nid for c in computers for nid in c.get("network_idn", []))
+                | set(nid for s in software for nid in s.get("network_idn", []))
+            )
         ),
         "software_ids": [s["idn"] for s in software],
         "credential_ids": [c.credential_id for c in Credential.query.all()],

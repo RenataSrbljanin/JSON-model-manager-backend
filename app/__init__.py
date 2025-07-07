@@ -33,6 +33,9 @@ from .config import Config
 
 from app.models.computer import Computer
 from app.models.installed_software import InstalledSoftware
+from app.models.credential import Credential
+from app.models.data_model import DataModel
+from app.models.firewall_rule import FirewallRule
 from app.models.software_data_link import SoftwareDataLink
 from app.routes.json_routes import json_bp
 
