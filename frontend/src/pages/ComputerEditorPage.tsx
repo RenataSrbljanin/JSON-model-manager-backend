@@ -9,18 +9,33 @@ import {
 import type { Computer } from "../api/computers"; //"../output_models";
 import type { InstalledSoftware } from "../api/installedSoftware";
 import axios from "axios";
+import { normalizeInstalledSoftware } from "../utils/normalizeInstalledSoftware";
 
 export default function ComputerEditorPage({ idn }: { idn: string }) {
   const [computer, setComputer] = useState<Computer | null>(null);
   const [softwareList, setSoftwareList] = useState<InstalledSoftware[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
-      const comp = await getComputerById(idn);
-      setComputer(comp);
+      try {
+        const comp = await getComputerById(idn);
+        if (!comp) {
+          setError("Računar nije pronađen.");
+          return;
+        }
+        setComputer(comp);
 
-      const installed = await getInstalledSoftwareByComputerId(idn);
-      setSoftwareList(installed);
+        const installed = await getInstalledSoftwareByComputerId(idn);
+        if (!installed) {
+          setSoftwareList([]);
+        } else {
+          setSoftwareList(installed);
+        }
+      } catch (err) {
+        console.error("Greška prilikom učitavanja:", err);
+        setError("Greška prilikom učitavanja podataka.");
+      }
     }
     fetchData();
   }, [idn]);
@@ -46,6 +61,7 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
       alert("Greška pri čuvanju fajla.");
     }
   };
+  if (error) return <div className="text-red-500">{error}</div>;
   if (!computer) return <div>Loading...</div>;
 
   return (
@@ -58,9 +74,12 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
 
       <div className="space-y-6">
         {softwareList.map((s) => (
-          <div key={s.idn} className="bg-white shadow rounded p-4">
+          <div
+            key={s.idn}
+            className="bg-gray-100 border rounded-lg p-4 shadow space-y-4 mb-6"
+          >
             <InstalledSoftwareForm
-              software={s}
+              software={normalizeInstalledSoftware(s)}
               onSubmit={handleSoftwareUpdate}
             />
           </div>

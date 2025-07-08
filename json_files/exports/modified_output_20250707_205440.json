@@ -1,0 +1,32 @@
+{
+  "comp-2": {
+    "data": [
+      "OS:Linux",
+      "Location:Lab"
+    ],
+    "idn": "comp-2",
+    "installed_software_idns": [
+      "soft-1",
+      "soft-2"
+    ],
+    "network_idn": [
+      1,
+      2
+    ],
+    "provides_hardware_quota": 50,
+    "software_data_links": {
+      "soft-1": [
+        "dt-1",
+        "dt-2"
+      ]
+    },
+    "software_idn_mapping": {
+      "soft-1": "Software One"
+    },
+    "stored_credentials": [
+      "cred-1"
+    ],
+    "used_hardware_quota": 40,
+    "installed_software": {}
+  }
+}

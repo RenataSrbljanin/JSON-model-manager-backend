@@ -25,7 +25,7 @@ with app.app_context():
         print("ℹ️  Test data already exists. Skipping insert.")
     else:
         # Ubaci test podatke samo ako ne postoji
-        test_computer = Computer(
+        test_computer_1 = Computer(
             idn="comp-1",
             data=["OS:Linux", "Location:Lab"],
             installed_software_idns=["soft-1", "soft-2"],
@@ -103,9 +103,25 @@ with app.app_context():
         link3 = SoftwareDataLink(software_idn="soft-2", data_type_id="dt-3")
 
         # Save to DB
-        db.session.add(test_computer)
+        db.session.add(test_computer_1)
         db.session.add_all([software_1, software_2])
         db.session.add_all([link1, link2, link3])
         db.session.commit()
 
+    if Computer.query.filter_by(idn="comp-2").first():
+        print("ℹ️  Test data already exists. Skipping insert.")
+    else:
+        test_computer_2 = Computer(
+            idn="comp-2",
+            data=["OS:Linux", "Location:Lab"],
+            installed_software_idns=["soft-1", "soft-2"],
+            stored_credentials=["cred-1"],
+            software_data_links={"soft-1": ["dt-1", "dt-2"]},
+            software_idn_mapping={"soft-1": "Software One"},
+            network_idn=[1, 2],
+            provides_hardware_quota=100.0,
+            used_hardware_quota=40.0,
+        )
+        db.session.add(test_computer_2)
+        db.session.commit()
         print("✅ Database created and test data inserted.")

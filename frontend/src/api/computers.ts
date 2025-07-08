@@ -19,9 +19,23 @@ export const getAllComputers = async (): Promise<Computer[]> => {
   return response.data;
 };
 
-export const getComputerById = async (idn: string): Promise<Computer> => {
-  const response = await axios.get<Computer>(`${BASE_URL}/${idn}`);
-  return response.data;
+export const getComputerById = async (
+  idn: string
+): Promise<Computer | null> => {
+  try {
+    const response = await axios.get<Computer>(`${BASE_URL}/${idn}`);
+    return response.data;
+  } catch (error: any) {
+    console.error("Greška prilikom dohvatanja računara:", error);
+
+    // Ako je status 404, možemo vratiti null
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      return null;
+    }
+
+    // Za sve ostale greške – propagiraj grešku dalje
+    throw error;
+  }
 };
 
 export const createComputer = async (
