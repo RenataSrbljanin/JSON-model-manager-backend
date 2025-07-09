@@ -13,8 +13,8 @@ export default function InstalledSoftwareForm({ software, onSubmit }: Props) {
   const [formData, setFormData] = useState(software);
   const [dataLinks, setDataLinks] = useState<string[]>([]);
   const [suggestions, setSuggestions] = useState<Suggestions | null>(null);
+  const [message, setMessage] = useState("");
 
-  // Učitaj linkovane tipove podataka
   useEffect(() => {
     async function fetchLinks() {
       try {
@@ -27,7 +27,6 @@ export default function InstalledSoftwareForm({ software, onSubmit }: Props) {
     fetchLinks();
   }, [software.idn]);
 
-  // Učitaj sugestije za dropdown menije
   useEffect(() => {
     async function fetchSuggestions() {
       try {
@@ -52,10 +51,14 @@ export default function InstalledSoftwareForm({ software, onSubmit }: Props) {
       onSubmit={(e) => {
         e.preventDefault();
         onSubmit(formData);
+        setMessage("✅ Softver uspešno sačuvan.");
+        setTimeout(() => setMessage(""), 3000);
       }}
       className="space-y-4"
     >
       <h3 className="text-lg font-semibold mb-2">Softver: {formData.idn}</h3>
+
+      {message && <div className="text-green-600 font-medium">{message}</div>}
 
       <div className="text-sm text-gray-600">
         <strong>Data Types Linked:</strong>{" "}
@@ -66,102 +69,256 @@ export default function InstalledSoftwareForm({ software, onSubmit }: Props) {
         <strong>Computer IDN:</strong> {formData.computer_idn}
       </div>
 
-      {/* Person Group */}
-      <div className="flex flex-col">
-        <label className="mb-1 font-medium">Person Group:</label>
-        <select
-          className="border rounded px-2 py-1"
-          value={formData.person_group_id ?? ""}
-          onChange={(e) => handleChange("person_group_id", e.target.value)}
-        >
-          <option value="">--Select--</option>
-          {Array.isArray(suggestions.person_group_ids) &&
-            suggestions.person_group_ids.map((pgid) => (
-              <option key={pgid} value={pgid}>
-                {pgid}
-              </option>
-            ))}
-        </select>
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">IDN Variant:</label>
+          <input
+            type="text"
+            className="border rounded px-2 py-1"
+            value={formData.idn_variant ?? ""}
+            onChange={(e) => handleChange("idn_variant", e.target.value)}
+            required
+          />
+        </div>
 
-      {/* Hardware IDs */}
-      <div className="flex flex-col">
-        <label className="mb-1 font-medium">Hardware IDs:</label>
-        <select
-          // multiple
-          className="border rounded px-2 py-1"
-          value={formData.hardware_ids ?? []}
-          onChange={(e) =>
-            handleChange(
-              "hardware_ids",
-              Array.from(e.target.selectedOptions, (opt) => opt.value)
-            )
-          }
-        >
-          {Array.isArray(suggestions.hardware_ids) &&
-            suggestions.hardware_ids.map((hid) => (
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">CPE IDN:</label>
+          <input
+            type="text"
+            className="border rounded px-2 py-1"
+            value={formData.cpe_idn}
+            onChange={(e) => handleChange("cpe_idn", e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">Hardware IDs:</label>
+          <select
+            multiple
+            className="border rounded px-2 py-1"
+            value={formData.hardware_ids ?? []}
+            onChange={(e) =>
+              handleChange(
+                "hardware_ids",
+                Array.from(e.target.selectedOptions, (opt) => opt.value)
+              )
+            }
+          >
+            {suggestions.hardware_ids.map((hid) => (
               <option key={hid} value={hid}>
                 {hid}
               </option>
             ))}
-        </select>
-      </div>
+          </select>
+        </div>
 
-      {/* Accepts Credentials */}
-      <div className="flex flex-col">
-        <label className="mb-1 font-medium">Accepts Credentials:</label>
-        <select
-          // multiple
-          className="border rounded px-2 py-1"
-          value={formData.accepts_credentials ?? []}
-          onChange={(e) =>
-            handleChange(
-              "accepts_credentials",
-              Array.from(e.target.selectedOptions, (opt) => opt.value)
-            )
-          }
-        >
-          {Array.isArray(suggestions.credential_ids) &&
-            suggestions.credential_ids.map((cid) => (
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">Accepts Credentials:</label>
+          <select
+            multiple
+            className="border rounded px-2 py-1"
+            value={formData.accepts_credentials ?? []}
+            onChange={(e) =>
+              handleChange(
+                "accepts_credentials",
+                Array.from(e.target.selectedOptions, (opt) => opt.value)
+              )
+            }
+          >
+            {suggestions.credential_ids.map((cid) => (
               <option key={cid} value={cid}>
                 {cid}
               </option>
             ))}
-        </select>
-      </div>
+          </select>
+        </div>
 
-      {/* Network IDNs */}
-      <div className="flex flex-col">
-        <label className="mb-1 font-medium">Network IDNs:</label>
-        <select
-          // multiple
-          className="border rounded px-2 py-1"
-          value={(formData.network_idn ?? []).map(String)}
-          onChange={(e) =>
-            handleChange(
-              "network_idn",
-              Array.from(e.target.selectedOptions, (opt) => Number(opt.value))
-            )
-          }
-        >
-          {Array.isArray(suggestions.network_idns) &&
-            suggestions.network_idns.map((nid) => (
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">Network Clients:</label>
+          <input
+            type="text"
+            className="border rounded px-2 py-1"
+            value={formData.network_clients.join(",")}
+            onChange={(e) =>
+              handleChange(
+                "network_clients",
+                e.target.value.split(",").map((s) => s.trim())
+              )
+            }
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">Network Servers:</label>
+          <input
+            type="text"
+            className="border rounded px-2 py-1"
+            value={formData.network_servers.join(",")}
+            onChange={(e) =>
+              handleChange(
+                "network_servers",
+                e.target.value.split(",").map((s) => s.trim())
+              )
+            }
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">Provides Services:</label>
+          <input
+            type="text"
+            className="border rounded px-2 py-1"
+            value={formData.provides_services.join(",")}
+            onChange={(e) =>
+              handleChange(
+                "provides_services",
+                e.target.value.split(",").map((s) => s.trim())
+              )
+            }
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">Provides Network Services:</label>
+          <input
+            type="text"
+            className="border rounded px-2 py-1"
+            value={formData.provides_network_services.join(",")}
+            onChange={(e) =>
+              handleChange(
+                "provides_network_services",
+                e.target.value.split(",").map((s) => s.trim())
+              )
+            }
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">Provides User Services:</label>
+          <input
+            type="text"
+            className="border rounded px-2 py-1"
+            value={formData.provides_user_services.join(",")}
+            onChange={(e) =>
+              handleChange(
+                "provides_user_services",
+                e.target.value.split(",").map((s) => s.trim())
+              )
+            }
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">Person Group:</label>
+          <select
+            className="border rounded px-2 py-1"
+            value={formData.person_group_id ?? ""}
+            onChange={(e) => handleChange("person_group_id", e.target.value)}
+          >
+            <option value="">--Select--</option>
+            {suggestions.person_group_ids.map((pgid) => (
+              <option key={pgid} value={pgid}>
+                {pgid}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">Person Index:</label>
+          <input
+            type="number"
+            className="border rounded px-2 py-1"
+            value={formData.person_index}
+            onChange={(e) =>
+              handleChange("person_index", Number(e.target.value))
+            }
+            min={0}
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">Network IDNs:</label>
+          <select
+            multiple
+            className="border rounded px-2 py-1"
+            value={(formData.network_idn ?? []).map(String)}
+            onChange={(e) =>
+              handleChange(
+                "network_idn",
+                Array.from(e.target.selectedOptions, (opt) => Number(opt.value))
+              )
+            }
+          >
+            {suggestions.network_idns.map((nid) => (
               <option key={nid} value={nid}>
                 {nid}
               </option>
             ))}
-        </select>
-      </div>
+          </select>
+        </div>
 
-      {/* IDN Variant */}
-      <div className="flex flex-col">
-        <label className="mb-1 font-medium">Variant:</label>
-        <input
-          type="text"
-          className="border rounded px-2 py-1"
-          value={formData.idn_variant ?? ""}
-          onChange={(e) => handleChange("idn_variant", e.target.value)}
-        />
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">Is Database:</label>
+          <select
+            className="border rounded px-2 py-1"
+            value={String(formData.is_database)}
+            onChange={(e) =>
+              handleChange("is_database", e.target.value === "true")
+            }
+          >
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+        </div>
+
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">Max Client Count:</label>
+          <input
+            type="number"
+            className="border rounded px-2 py-1"
+            value={formData.max_client_count}
+            onChange={(e) =>
+              handleChange("max_client_count", parseInt(e.target.value))
+            }
+            min={0}
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">Requires Hardware Quota:</label>
+          <input
+            type="number"
+            className="border rounded px-2 py-1"
+            value={formData.requires_hardware_quota}
+            onChange={(e) =>
+              handleChange(
+                "requires_hardware_quota",
+                parseFloat(e.target.value)
+              )
+            }
+            min={0}
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">
+            Requires Hardware Quota Per Client:
+          </label>
+          <input
+            type="number"
+            className="border rounded px-2 py-1"
+            value={formData.requires_hardware_quota_per_client}
+            onChange={(e) =>
+              handleChange(
+                "requires_hardware_quota_per_client",
+                parseFloat(e.target.value)
+              )
+            }
+            min={0}
+          />
+        </div>
       </div>
 
       <button

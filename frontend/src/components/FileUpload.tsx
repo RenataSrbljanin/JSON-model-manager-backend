@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { uploadJsonFile } from "../api/upload";
 
-export default function FileUpload() {
+type Props = {
+  onUploadSuccess?: () => void;
+};
+
+export default function FileUpload({ onUploadSuccess }: Props) {
   const [status, setStatus] = useState("");
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -13,16 +17,28 @@ export default function FileUpload() {
 
     try {
       const res = await uploadJsonFile(formData);
-      setStatus(`Uploaded: ${Object.keys(res.data).length} computers`);
+      console.log("Upload response:", res);
+
+      // ✅ Prikaži poruku iz backend-a
+      setStatus(`✅ ${res.message}`);
+
+      // 🔁 Osveži prikaz računara u aplikaciji
+      if (onUploadSuccess) await onUploadSuccess();
     } catch (err) {
-      setStatus("Error uploading file.");
+      console.error("Greška pri uploadu:", err);
+      setStatus("❌ Greška pri uploadu fajla.");
     }
   };
 
   return (
-    <div>
-      <input type="file" data-testid="file-input" onChange={handleUpload} />
-      <p data-testid="upload-status">{status}</p>
+    <div className="flex flex-col space-y-2">
+      <input
+        type="file"
+        accept=".json"
+        onChange={handleUpload}
+        className="border px-2 py-1 rounded w-fit"
+      />
+      {status && <p className="text-sm text-gray-700">{status}</p>}
     </div>
   );
 }
