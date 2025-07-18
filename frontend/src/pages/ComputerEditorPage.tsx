@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import ComputerForm from "../components/ComputerForm";
+import ComputerForm from "../components/ComputerForm_1";
 import InstalledSoftwareForm from "../components/InstalledSoftwareForm";
 import { getComputerById, updateComputer } from "../api/computers";
 import {
@@ -13,7 +13,7 @@ import { normalizeInstalledSoftware } from "../utils/normalizeInstalledSoftware"
 
 export default function ComputerEditorPage({ idn }: { idn: string }) {
   const [computer, setComputer] = useState<Computer | null>(null);
-  const [softwareList, setSoftwareList] = useState<InstalledSoftware[]>([]);
+  // const [softwareList, setSoftwareList] = useState<InstalledSoftware[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -26,12 +26,12 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
         }
         setComputer(comp);
 
-        const installed = await getInstalledSoftwareByComputerId(idn);
-        if (!installed) {
-          setSoftwareList([]);
-        } else {
-          setSoftwareList(installed);
-        }
+        // const installed = await getInstalledSoftwareByComputerId(idn);
+        // if (!installed) {
+        //   setSoftwareList([]);
+        // } else {
+        //   setSoftwareList(installed);
+        // }
       } catch (err) {
         console.error("Greška prilikom učitavanja:", err);
         setError("Greška prilikom učitavanja podataka.");
@@ -45,10 +45,10 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
     alert("Computer updated");
   };
 
-  const handleSoftwareUpdate = async (updatedSoftware: InstalledSoftware) => {
-    await updateInstalledSoftware(updatedSoftware.idn, updatedSoftware);
-    alert("Software updated");
-  };
+  // const handleSoftwareUpdate = async (updatedSoftware: InstalledSoftware) => {
+  //   await updateInstalledSoftware(updatedSoftware.idn, updatedSoftware);
+  //   alert("Software updated");
+  // };
   const handleSave = async (modifiedData: any) => {
     try {
       const response = await axios.post(
@@ -72,27 +72,14 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
         <ComputerForm computer={computer} onSubmit={handleComputerUpdate} />
       </div>
 
-      <div className="space-y-6">
-        {softwareList.map((s) => (
-          <div
-            key={s.idn}
-            className="bg-gray-100 border rounded-lg p-4 shadow space-y-4 mb-6"
-          >
-            <InstalledSoftwareForm
-              software={normalizeInstalledSoftware(s)}
-              onSubmit={handleSoftwareUpdate}
-            />
-          </div>
-        ))}
-      </div>
       <button
         onClick={() =>
           handleSave({
             [computer.idn]: {
               ...computer,
-              installed_software: Object.fromEntries(
-                softwareList.map((s) => [s.idn, s])
-              ),
+              // installed_software: Object.fromEntries(
+              //   softwareList.map((s) => [s.idn, s])
+              // ),
             },
           })
         }

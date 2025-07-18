@@ -1,5 +1,5 @@
 import { render, fireEvent } from "@testing-library/react";
-import ComputerForm from "../components/ComputerForm";
+import ComputerForm from "../components/ComputerForm_1";
 import { describe, test, expect, vi } from "vitest";
 
 test("updates quota on input change", () => {

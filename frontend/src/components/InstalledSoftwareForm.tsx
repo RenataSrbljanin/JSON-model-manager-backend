@@ -91,11 +91,9 @@ export default function InstalledSoftwareForm({ software, onSubmit }: Props) {
             required
           />
         </div>
-
         <div className="flex flex-col">
           <label className="mb-1 font-medium">Hardware IDs:</label>
           <select
-            multiple
             className="border rounded px-2 py-1"
             value={formData.hardware_ids ?? []}
             onChange={(e) =>
@@ -116,7 +114,6 @@ export default function InstalledSoftwareForm({ software, onSubmit }: Props) {
         <div className="flex flex-col">
           <label className="mb-1 font-medium">Accepts Credentials:</label>
           <select
-            multiple
             className="border rounded px-2 py-1"
             value={formData.accepts_credentials ?? []}
             onChange={(e) =>
@@ -241,7 +238,6 @@ export default function InstalledSoftwareForm({ software, onSubmit }: Props) {
         <div className="flex flex-col">
           <label className="mb-1 font-medium">Network IDNs:</label>
           <select
-            multiple
             className="border rounded px-2 py-1"
             value={(formData.network_idn ?? []).map(String)}
             onChange={(e) =>
