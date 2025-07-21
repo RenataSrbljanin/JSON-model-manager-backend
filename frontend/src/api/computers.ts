@@ -1,16 +1,5 @@
 import axios from "axios";
-
-export interface Computer {
-  idn: string;
-  data: string[];
-  installed_software_idns: string[];
-  stored_credentials: string[];
-  software_data_links: Record<string, string[]>;
-  software_idn_mapping: Record<string, string>;
-  network_idn: number[];
-  provides_hardware_quota: number;
-  used_hardware_quota: number;
-}
+import type { Computer } from "../types/computer";
 
 const BASE_URL = "http://localhost:5000/api/computers"; // prilagodi ako backend nije localhost:5000
 

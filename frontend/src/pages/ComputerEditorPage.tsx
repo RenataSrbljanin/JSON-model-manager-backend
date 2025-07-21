@@ -6,7 +6,7 @@ import {
   getInstalledSoftwareByComputerId,
   updateInstalledSoftware,
 } from "../api/installedSoftware";
-import type { Computer } from "../api/computers"; //"../output_models";
+import type { Computer } from "../types/computer";
 import type { InstalledSoftware } from "../api/installedSoftware";
 import axios from "axios";
 import { normalizeInstalledSoftware } from "../utils/normalizeInstalledSoftware";
@@ -69,7 +69,11 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
       <h2 className="text-xl font-bold mb-4">Editing Computer: {idn}</h2>
 
       <div className="bg-white shadow-md rounded p-4 mb-6">
-        <ComputerForm computer={computer} onSubmit={handleComputerUpdate} />
+        <ComputerForm
+          computer={computer}
+          onSubmit={handleComputerUpdate}
+          onChange={setComputer}
+        />
       </div>
 
       <button
