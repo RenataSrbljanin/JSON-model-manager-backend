@@ -5,11 +5,11 @@ import {
   getInstalledSoftwareById,
   updateInstalledSoftware,
 } from "../api/installedSoftware";
-import type { InstalledSoftware } from "../api/installedSoftware";
+import type { Software } from "../api/installedSoftware";
 
 export default function InstalledSoftwareEditorPage() {
   const { idn } = useParams<{ idn: string }>();
-  const [software, setSoftware] = useState<InstalledSoftware | null>(null);
+  const [software, setSoftware] = useState<Software | null>(null);
 
   useEffect(() => {
     if (idn) {
@@ -17,7 +17,7 @@ export default function InstalledSoftwareEditorPage() {
     }
   }, [idn]);
 
-  const handleSubmit = async (updated: InstalledSoftware) => {
+  const handleSubmit = async (updated: Software) => {
     if (!software) return;
     await updateInstalledSoftware(software.idn, updated);
     alert("Software updated.");

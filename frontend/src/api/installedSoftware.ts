@@ -1,42 +1,44 @@
 import axios from "axios";
+import type { Software } from "../types/software";
+// export interface Software {
+//   accepts_credentials: string[]; // 1
+//   compatible_data_types: string[]; //2
+//   computer_idn: string; // 3
+//   cpe_idn: string; // 4
+//   hardware_ids: string[]; // 5
 
-export interface InstalledSoftware {
-  idn: string;
-  idn_variant: string;
-  cpe_idn: string;
-  computer_idn: string;
-  compatible_data_types: string[];
-  accepts_credentials: string[];
-  local_dependencies: string[];
-  network_dependencies: string[];
-  network_idn: number[];
-  installed_combination: [string, "L" | "N"][];
-  provides_services: string[];
-  provides_network_services: string[];
-  provides_user_services: string[];
-  max_client_count: number;
-  requires_hardware_quota: number;
-  requires_hardware_quota_per_client: number;
-  is_database: boolean | string;
-  hardware_ids: string[];
-  person_group_id: string | null;
-  person_index: number;
-  network_clients: string[];
-  network_servers: string[];
-}
+//   idn: string; // 6
+//   idn_variant: string; // 7
+  
+//   installed_combination: [string, "L" | "N"][]; // 8
+//   is_database: boolean | string; // 9
+//   local_dependencies: string[]; // 10
+//   max_client_count: number; // 11
+//   network_clients: string[]; // 12
+//   network_dependencies: string[]; // 13
+//   network_idn: number[]; // 14
+//   network_servers: string[]; // 15
+//   person_group_id: string | null; // 16
+//   person_index: number; // 17
+//   provides_network_services: string[]; // 18
+//   provides_services: string[];  // 19
+//   provides_user_services: string[]; // 20
+//   requires_hardware_quota: number;  // 21
+//   requires_hardware_quota_per_client: number;  // 22
+// }
 
 const BASE_URL = "http://localhost:5000/api/installed-software";
 
 export const getAllInstalledSoftware = async (): Promise<
-  InstalledSoftware[]
+  Software[]
 > => {
-  const response = await axios.get<InstalledSoftware[]>(BASE_URL + "/");
+  const response = await axios.get<Software[]>(BASE_URL + "/");
   return response.data;
 };
 export const getInstalledSoftwareByComputerId = async (
   computer_idn: string
-): Promise<InstalledSoftware[]> => {
-  const response = await axios.get<InstalledSoftware[]>(
+): Promise<Software[]> => {
+  const response = await axios.get<Software[]>(
     `${BASE_URL}/computer/${computer_idn}`
   );
   return response.data;
@@ -44,15 +46,15 @@ export const getInstalledSoftwareByComputerId = async (
 
 export const getInstalledSoftwareById = async (
   idn: string
-): Promise<InstalledSoftware> => {
-  const response = await axios.get<InstalledSoftware>(`${BASE_URL}/${idn}`);
+): Promise<Software> => {
+  const response = await axios.get<Software>(`${BASE_URL}/${idn}`);
   return response.data;
 };
 
 export const createInstalledSoftware = async (
-  software: Omit<InstalledSoftware, "idn"> & { idn: string }
-): Promise<InstalledSoftware> => {
-  const response = await axios.post<InstalledSoftware>(
+  software: Omit<Software, "idn"> & { idn: string }
+): Promise<Software> => {
+  const response = await axios.post<Software>(
     BASE_URL + "/",
     software
   );
@@ -61,10 +63,10 @@ export const createInstalledSoftware = async (
 
 export const updateInstalledSoftware = async (
   idn: string,
-  data: Partial<Omit<InstalledSoftware, "computer_idn" | "idn">>
-): Promise<InstalledSoftware> => {
+  data: Partial<Omit<Software, "computer_idn" | "idn">>
+): Promise<Software> => {
   // važno: ne šalji computer_idn prilikom update, jer korisnik ne može menjati computer_idn
-  const response = await axios.put<InstalledSoftware>(
+  const response = await axios.put<Software>(
     `${BASE_URL}/${idn}`,
     data
   );

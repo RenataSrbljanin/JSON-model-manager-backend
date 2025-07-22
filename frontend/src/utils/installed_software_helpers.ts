@@ -1,6 +1,4 @@
-import type { InstalledSoftware } from "../api/installedSoftware";
-
-
+import type { Software } from "../types/software";
 
  // Parsira UUID iz starog idn stringa
 function extractUUIDFromIdn(idn: string): string {
@@ -8,7 +6,7 @@ function extractUUIDFromIdn(idn: string): string {
   return match ? match[1] : crypto.randomUUID(); // fallback ako ne postoji
 }
  // Generiše novi IDN na osnovu trenutnog softverskog objekta
-export function generateInstalledSoftwareIdn(software: InstalledSoftware): string
+export function generateInstalledSoftwareIdn(software: Software): string
 {
   const uuid = extractUUIDFromIdn(software.idn);
   const base = software.computer_idn;
@@ -24,7 +22,7 @@ function extractIndexFromVariant(variant: string): number
   return match ? parseInt(match[1]) : 0;
 }
 // Generiše novi idn_variant (koristi cpe_idn i index)
-export function generateInstalledSoftwareVariant(software: InstalledSoftware): string
+export function generateInstalledSoftwareVariant(software: Software): string
 {
   const index = extractIndexFromVariant(software.idn_variant);
   return `${software.cpe_idn}#${index}`;

@@ -8,13 +8,13 @@ import {
 } from "../api/installedSoftware";
 import type { Computer as BaseComputer } from "../types/computer";
 type Computer = BaseComputer & { previous_idn?: string };
-import type { InstalledSoftware } from "../api/installedSoftware";
+import type { Software } from "../types/software";
 import axios from "axios";
 import { normalizeInstalledSoftware } from "../utils/normalizeInstalledSoftware";
 
 export default function ComputerEditorPage({ idn }: { idn: string }) {
   const [computer, setComputer] = useState<Computer | null>(null);
-  const [softwareList, setSoftwareList] = useState<InstalledSoftware[]>([]);
+  const [softwareList, setSoftwareList] = useState<Software[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -43,16 +43,18 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
 
 const handleComputerUpdate = async (updated: Computer & { previous_idn?: string }) => {
   const previous_idn = updated.previous_idn || updated.idn;
-  console.log("Šaljem PUT za:", previous_idn); // linija 53
-  console.log("Podaci koje šaljem:", updated); // linija 54
 
   const { previous_idn: _, ...dataToSend } = updated; // ✅ izbegnut konflikt
+
+  console.log("Šaljem PUT za:", previous_idn);
+  console.log("Podaci koje ZAISTA šaljem:", dataToSend);
+
   await updateComputer(previous_idn, dataToSend);
   alert("Computer updated"); // linija 56
 };
 
 
-  const handleSoftwareUpdate = async (updatedSoftware: InstalledSoftware) => {
+  const handleSoftwareUpdate = async (updatedSoftware: Software) => {
     await updateInstalledSoftware(updatedSoftware.idn, updatedSoftware);
     alert("Software updated");
   };

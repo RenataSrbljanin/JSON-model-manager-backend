@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { getDataLinksBySoftwareId } from "../api/softwareDataLinks";
 import { getSuggestions } from "../api/suggestions";
 import type { Suggestions } from "../api/suggestions";
-import type { InstalledSoftware } from "../api/installedSoftware";
+import type { Software } from "../api/installedSoftware";
 
 type Props = {
-  software: InstalledSoftware;
-  onSubmit: (s: InstalledSoftware) => void;
+  software: Software;
+  onSubmit: (s: Software) => void;
 };
 
 export default function InstalledSoftwareForm({ software, onSubmit }: Props) {
@@ -39,7 +39,7 @@ export default function InstalledSoftwareForm({ software, onSubmit }: Props) {
     fetchSuggestions();
   }, []);
 
-  const handleChange = (field: keyof InstalledSoftware, value: any) => {
+  const handleChange = (field: keyof Software, value: any) => {
     if (field === "computer_idn") return;
     setFormData({ ...formData, [field]: value });
   };

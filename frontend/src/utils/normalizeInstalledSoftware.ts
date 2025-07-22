@@ -1,8 +1,8 @@
-import type { InstalledSoftware } from "../api/installedSoftware";
+import type { Software } from "../types/software";
 
 export function normalizeInstalledSoftware(
-  sw: InstalledSoftware
-): InstalledSoftware {
+  sw: Software
+): Software {
   return {
     ...sw,
     person_group_id: sw.person_group_id ?? "",

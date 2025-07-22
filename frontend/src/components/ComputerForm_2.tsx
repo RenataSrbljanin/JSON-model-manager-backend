@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getInstalledSoftwareByComputerId, updateInstalledSoftware } from "../api/installedSoftware";
-import type { InstalledSoftware } from "../api/installedSoftware";
+import type { Software } from "../api/installedSoftware";
 import InstalledSoftwareForm from "./InstalledSoftwareForm";
 import { parseComputerIdn, generateComputerIdn } from "../utils/computer_idn_helpers";
 import type { Computer } from "../types/computer";
@@ -13,7 +13,7 @@ type Props = {
 
 export default function ComputerForm({ computer, onSubmit, onChange }: Props) {
   const [formData, setFormData] = useState<Computer>(computer);
-  const [installedSoftwareList, setInstalledSoftwareList] = useState<InstalledSoftware[]>([]);
+  const [installedSoftwareList, setInstalledSoftwareList] = useState<Software[]>([]);
 
   // Label nivo state-ovi
   const [labelLevel1, setLabelLevel1] = useState("");

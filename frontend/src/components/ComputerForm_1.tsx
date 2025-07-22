@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getInstalledSoftwareByComputerId,updateInstalledSoftware,} from "../api/installedSoftware";
-import type { InstalledSoftware } from "../api/installedSoftware";
+import type { Software } from "../api/installedSoftware";
 import InstalledSoftwareForm from "./InstalledSoftwareForm";
 import { generateComputerIdn } from "../utils/computer_idn_helpers";
 import type { Computer } from "../types/computer";
@@ -18,7 +18,7 @@ export default function ComputerForm({ computer, onSubmit, onChange }: Props) {
   const [labelLevel1, setLabelLevel1] = useState("");
   const [labelLevel2, setLabelLevel2] = useState("");
   const [labelLevel3, setLabelLevel3] = useState("");
-  const [installedSoftwareList, setInstalledSoftwareList] = useState<InstalledSoftware[]>([]);
+  const [installedSoftwareList, setInstalledSoftwareList] = useState<Software[]>([]);
   const [selectedSoftwareId, setSelectedSoftwareId] = useState<string | null>(null);
   const [previousIdn, setPreviousIdn] = useState<string>(computer.idn);
 
@@ -115,7 +115,7 @@ export default function ComputerForm({ computer, onSubmit, onChange }: Props) {
     }
   };
   // azurira Software
-  const handleSoftwareUpdate = async (updated: InstalledSoftware) => {
+  const handleSoftwareUpdate = async (updated: Software) => {
     try {
       await updateInstalledSoftware(updated.idn, updated);
       const updatedList = installedSoftwareList.map((s) => (s.idn === updated.idn ? updated : s));
