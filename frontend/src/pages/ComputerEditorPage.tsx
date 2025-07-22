@@ -6,14 +6,15 @@ import {
   getInstalledSoftwareByComputerId,
   updateInstalledSoftware,
 } from "../api/installedSoftware";
-import type { Computer } from "../types/computer";
+import type { Computer as BaseComputer } from "../types/computer";
+type Computer = BaseComputer & { previous_idn?: string };
 import type { InstalledSoftware } from "../api/installedSoftware";
 import axios from "axios";
 import { normalizeInstalledSoftware } from "../utils/normalizeInstalledSoftware";
 
 export default function ComputerEditorPage({ idn }: { idn: string }) {
   const [computer, setComputer] = useState<Computer | null>(null);
-  // const [softwareList, setSoftwareList] = useState<InstalledSoftware[]>([]);
+  const [softwareList, setSoftwareList] = useState<InstalledSoftware[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -24,14 +25,14 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
           setError("Računar nije pronađen.");
           return;
         }
-        setComputer(comp);
+        setComputer({ ...comp, previous_idn: comp.idn });
 
-        // const installed = await getInstalledSoftwareByComputerId(idn);
-        // if (!installed) {
-        //   setSoftwareList([]);
-        // } else {
-        //   setSoftwareList(installed);
-        // }
+        const installed = await getInstalledSoftwareByComputerId(idn);
+        if (!installed) {
+          setSoftwareList([]);
+        } else {
+          setSoftwareList(installed);
+        }
       } catch (err) {
         console.error("Greška prilikom učitavanja:", err);
         setError("Greška prilikom učitavanja podataka.");
@@ -40,15 +41,16 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
     fetchData();
   }, [idn]);
 
-  const handleComputerUpdate = async (updated: Computer) => {
-    await updateComputer(updated.idn, updated);
+  const handleComputerUpdate = async (updated: Computer & { previous_idn?: string }) => {
+    const previous_idn = updated.previous_idn || updated.idn;
+    await updateComputer(previous_idn, updated);
     alert("Computer updated");
   };
 
-  // const handleSoftwareUpdate = async (updatedSoftware: InstalledSoftware) => {
-  //   await updateInstalledSoftware(updatedSoftware.idn, updatedSoftware);
-  //   alert("Software updated");
-  // };
+  const handleSoftwareUpdate = async (updatedSoftware: InstalledSoftware) => {
+    await updateInstalledSoftware(updatedSoftware.idn, updatedSoftware);
+    alert("Software updated");
+  };
   const handleSave = async (modifiedData: any) => {
     try {
       const response = await axios.post(
@@ -69,27 +71,22 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
       <h2 className="text-xl font-bold mb-4">Editing Computer: {idn}</h2>
 
       <div className="bg-white shadow-md rounded p-4 mb-6">
-        <ComputerForm
-          computer={computer}
-          onSubmit={handleComputerUpdate}
-          onChange={setComputer}
-        />
+        <ComputerForm computer={computer} onSubmit={handleComputerUpdate} onChange={setComputer} />
       </div>
 
       <button
-        onClick={() =>
-          handleSave({
+        onClick={async () => {
+          await handleComputerUpdate(computer); // snimi u bazu
+          await handleSave({
             [computer.idn]: {
               ...computer,
-              // installed_software: Object.fromEntries(
-              //   softwareList.map((s) => [s.idn, s])
-              // ),
+              installed_software: Object.fromEntries(softwareList.map((s) => [s.idn, s])),
             },
-          })
-        }
-        className="px-4 py-2 bg-blue-600 text-white rounded mt-4"
+          }); // snimi fajl
+        }}
+        className="px-4 py-2 bg-purple-600 text-white rounded mt-4"
       >
-        Sačuvaj izmene fajla
+        Sačuvaj u bazi i kao fajl
       </button>
     </div>
   );

@@ -2,8 +2,35 @@ import axios from "axios";
 import type { Computer } from "../types/computer";
 
 const BASE_URL = "http://localhost:5000/api/computers"; // prilagodi ako backend nije localhost:5000
+/**
+ * Dohvaća listu računara sa Flask backend-a.
+ * Opcionalno filtrira računare na osnovu unetog termina za pretragu.
+ * @param searchTerm Termin za pretragu (npr. IDN računara).
+ * @returns Promise koji se razrešava u niz objekata tipa Computer.
+ */
+export const getAllComputers = async (searchTerm: string = ""): Promise<Computer[]> => {
+  try {
+    // Kreiramo URL sa parametrom za pretragu ako je searchTerm prisutan.
+    // Koristimo URLSearchParams za pravilno kodiranje parametara.
+    const params = new URLSearchParams();
+    if (searchTerm) {
+      params.append("search", searchTerm);
+    }
 
-export const getAllComputers = async (): Promise<Computer[]> => {
+    // Konstruišemo pun URL. Ako nema search terma, biće samo BASE_URL.
+    // Ako ima, biće BASE_URL?search=yourTerm
+    const url = `${BASE_URL}${params.toString() ? `?${params.toString()}` : ''}`;
+
+    const response = await axios.get<Computer[]>(url);
+    return response.data;
+  } catch (error) {
+    console.error("Greška pri dohvaćanju računara:", error);
+    // Možete baciti grešku ili vratiti prazan niz, zavisno od vašeg pristupa obradi grešaka
+    throw error; // Bacamo grešku da bi je HomePage mogao uhvatiti
+    // return []; // Alternativno, vratite prazan niz
+  }
+};
+export const getAllComputers_old = async (): Promise<Computer[]> => {
   const response = await axios.get<Computer[]>(BASE_URL + "/");
   return response.data;
 };
@@ -34,13 +61,17 @@ export const createComputer = async (
   return response.data;
 };
 
-export const updateComputer = async (
+export const updateComputer_old = async (
   idn: string,
   data: Partial<Omit<Computer, "idn">>
 ): Promise<Computer> => {
   const response = await axios.put<Computer>(`${BASE_URL}/${idn}`, data);
   return response.data;
 };
+export async function updateComputer(previousIdn: string, data: Computer): Promise<Computer> {
+  const response = await axios.put(`/api/computers/${previousIdn}`, data);
+  return response.data;
+}
 
 export const deleteComputer = async (idn: string): Promise<void> => {
   await axios.delete(`${BASE_URL}/${idn}`);

@@ -9,8 +9,22 @@ many_schema = ComputerSchema(many=True)
 
 @computer_bp.route("/", methods=["GET"])
 def get_all():
-    all_items = Computer.query.all()
+ # Dohvati 'search' parametar iz URL upita
+    search_term = request.args.get('search')
+
+    if search_term:
+        # Ako postoji search_term, filtriraj računare
+        # Koristi .ilike() za pretragu bez obzira na velika/mala slova
+        # Pretpostavljamo da želite da pretražujete po 'idn' polju
+        all_items = Computer.query.filter(
+            Computer.idn.ilike(f"%{search_term}%")
+        ).all()
+    else:
+        # Ako nema search_term-a, dohvati sve računare
+        all_items = Computer.query.all()
+
     return jsonify(many_schema.dump(all_items)), 200
+
 
 @computer_bp.route("/<string:idn>", methods=["GET"])
 def get_one(idn):
