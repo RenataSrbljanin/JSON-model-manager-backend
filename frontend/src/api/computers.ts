@@ -69,7 +69,8 @@ export const updateComputer_old = async (
   return response.data;
 };
 export async function updateComputer(previousIdn: string, data: Computer): Promise<Computer> {
-  const response = await axios.put(`/api/computers/${previousIdn}`, data);
+  const response = await axios.put(`${BASE_URL}/${previousIdn}`, data);
+ // onComputerUpdated(); // poziva funkciju iz parent komponente da ponovo učita listu
   return response.data;
 }
 

@@ -4,6 +4,7 @@ from .routes import register_routes
 from .config import Config
 
 from app.routes.json_routes import json_bp
+from flask_cors import CORS
 
 
 def create_app():
@@ -15,7 +16,7 @@ def create_app():
     bcrypt.init_app(app)
     jwt.init_app(app)
     cors.init_app(app)
-
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
     # Registracija svih ruta (blueprintova)
     register_routes(app)
 

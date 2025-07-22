@@ -29,6 +29,9 @@ export function parseComputerIdn(idn: string): ParsedComputerIdn {
 
 // Funkcija koja generiše idn iz delova
 export function generateComputerIdn(labelLevels: string[], deviceIndex: number, networkIdn: number, suffix?: string): string {
+  if (deviceIndex == null) alert("deviceIndex je prazan!");
+  if (networkIdn == null) alert("networkIdn je prazan!");
+
   const filteredLabels = labelLevels.filter((l) => l !== ""); // uklanja prazne
   const main = [...filteredLabels, deviceIndex.toString(), networkIdn.toString()].join(":");
   return suffix ? `${main}#${suffix}` : main;

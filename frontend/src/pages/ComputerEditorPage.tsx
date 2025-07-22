@@ -41,11 +41,16 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
     fetchData();
   }, [idn]);
 
-  const handleComputerUpdate = async (updated: Computer & { previous_idn?: string }) => {
-    const previous_idn = updated.previous_idn || updated.idn;
-    await updateComputer(previous_idn, updated);
-    alert("Computer updated");
-  };
+const handleComputerUpdate = async (updated: Computer & { previous_idn?: string }) => {
+  const previous_idn = updated.previous_idn || updated.idn;
+  console.log("Šaljem PUT za:", previous_idn); // linija 53
+  console.log("Podaci koje šaljem:", updated); // linija 54
+
+  const { previous_idn: _, ...dataToSend } = updated; // ✅ izbegnut konflikt
+  await updateComputer(previous_idn, dataToSend);
+  alert("Computer updated"); // linija 56
+};
+
 
   const handleSoftwareUpdate = async (updatedSoftware: InstalledSoftware) => {
     await updateInstalledSoftware(updatedSoftware.idn, updatedSoftware);
