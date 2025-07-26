@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { getDataLinksBySoftwareId } from "../api/softwareDataLinks";
 import { getSuggestions } from "../api/suggestions";
 import type { Suggestions } from "../api/suggestions";
-import type { Software } from "../api/installedSoftware";
+import type { Software } from "../types/software";
 
 type Props = {
   software: Software;

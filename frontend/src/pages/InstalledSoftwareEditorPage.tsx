@@ -5,7 +5,7 @@ import {
   getInstalledSoftwareById,
   updateInstalledSoftware,
 } from "../api/installedSoftware";
-import type { Software } from "../api/installedSoftware";
+import type { Software } from "../types/software";
 
 export default function InstalledSoftwareEditorPage() {
   const { idn } = useParams<{ idn: string }>();

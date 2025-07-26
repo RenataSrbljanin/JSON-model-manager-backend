@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import ComputerForm from "../components/ComputerForm_1";
-import InstalledSoftwareForm from "../components/InstalledSoftwareForm";
 import { getComputerById, updateComputer } from "../api/computers";
 import {
   getInstalledSoftwareByComputerId,

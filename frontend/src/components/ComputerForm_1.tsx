@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getInstalledSoftwareByComputerId,updateInstalledSoftware,} from "../api/installedSoftware";
-import type { Software } from "../api/installedSoftware";
+import type { Software } from "../types/software";
 import InstalledSoftwareForm from "./InstalledSoftwareForm";
 import { generateComputerIdn } from "../utils/computer_idn_helpers";
 import type { Computer } from "../types/computer";
