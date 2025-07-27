@@ -17,7 +17,13 @@ export type Computer = {
   label?: string;
   device_index?: number;
   suffix?: string;
+  previous_idn?: string; 
 };
+export interface ComputerIdnComponents {
+  label?: string;
+  device_index?: number;
+  suffix?: string;
+}
 export interface Employee {
   id: number;
   employee_group: string;
@@ -52,7 +58,7 @@ export interface Data {
 /**
  * Represents a Software component installed on a computer.
  */
-export interface Software {
+export interface Software_predlozeni {
   idn: string;
   computer_idn: string;
   cpe_idn: string;

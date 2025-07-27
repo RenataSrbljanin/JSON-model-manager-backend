@@ -48,7 +48,6 @@ export const getComputerById = async (
     if (axios.isAxiosError(error) && error.response?.status === 404) {
       return null;
     }
-
     // Za sve ostale greške – propagiraj grešku dalje
     throw error;
   }
@@ -61,13 +60,6 @@ export const createComputer = async (
   return response.data;
 };
 
-export const updateComputer_old = async (
-  idn: string,
-  data: Partial<Omit<Computer, "idn">>
-): Promise<Computer> => {
-  const response = await axios.put<Computer>(`${BASE_URL}/${idn}`, data);
-  return response.data;
-};
 export async function updateComputer(previousIdn: string, data: Computer): Promise<Computer> {
   const response = await axios.put(`${BASE_URL}/${previousIdn}`, data);
  // onComputerUpdated(); // poziva funkciju iz parent komponente da ponovo učita listu

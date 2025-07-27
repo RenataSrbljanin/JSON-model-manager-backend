@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import ComputerForm from "../components/ComputerForm_1";
 import { getComputerById, updateComputer } from "../api/computers";
-import {
-  getInstalledSoftwareByComputerId, updateInstalledSoftware
+import { getInstalledSoftwareByComputerId, updateInstalledSoftware
 } from "../api/installedSoftware";
 import type { Computer as BaseComputer } from "../types/computer";
 type Computer = BaseComputer & { previous_idn?: string };
@@ -39,17 +38,17 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
     fetchData();
   }, [idn]);
 
-  const handleComputerUpdate = async (updated: Computer & { previous_idn?: string }) => {
-    const previous_idn = updated.previous_idn || updated.idn;
+const handleComputerUpdate = async (updated: Computer & { previous_idn?: string }) => {
+  const previous_idn = updated.previous_idn || updated.idn;
 
-    const { previous_idn: _, ...dataToSend } = updated; // ✅ izbegnut konflikt
+  const { previous_idn: _, ...dataToSend } = updated; // ✅ izbegnut konflikt
 
-    console.log("Šaljem PUT za:", previous_idn);
-    console.log("Podaci koje ZAISTA šaljem:", dataToSend);
+  console.log("Šaljem PUT za:", previous_idn);
+  console.log("Podaci koje ZAISTA šaljem:", dataToSend);
 
-    await updateComputer(previous_idn, dataToSend);
-    alert("Computer updated"); // linija 56
-  };
+  await updateComputer(previous_idn, dataToSend);
+  alert("Computer updated"); // linija 56
+};
 
 
   const handleSoftwareUpdate = async (updatedSoftware: Software) => {
@@ -81,14 +80,13 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
 
       <button
         onClick={async () => {
-          // await handleComputerUpdate(computer); // snimi u bazu
+          await handleComputerUpdate(computer); // snimi u bazu
           await handleSave({
             [computer.idn]: {
               ...computer,
               installed_software: Object.fromEntries(softwareList.map((s) => [s.idn, s])),
             },
           }); // snimi fajl
-       //   await handleComputerUpdate(computer); // snimi u bazu
         }}
         className="px-4 py-2 bg-purple-600 text-white rounded mt-4"
       >

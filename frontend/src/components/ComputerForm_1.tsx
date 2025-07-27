@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getInstalledSoftwareByComputerId,updateInstalledSoftware,} from "../api/installedSoftware";
+import { getInstalledSoftwareByComputerId, updateInstalledSoftware, } from "../api/installedSoftware";
 import type { Software } from "../types/software";
 import InstalledSoftwareForm from "./InstalledSoftwareForm";
 import { generateComputerIdn } from "../utils/computer_idn_helpers";
@@ -18,9 +18,10 @@ export default function ComputerForm({ computer, onSubmit, onChange }: Props) {
   const [labelLevel1, setLabelLevel1] = useState("");
   const [labelLevel2, setLabelLevel2] = useState("");
   const [labelLevel3, setLabelLevel3] = useState("");
+  const [device_index, setDeviceIndex] = useState<number | undefined>(undefined);
   const [installedSoftwareList, setInstalledSoftwareList] = useState<Software[]>([]);
   const [selectedSoftwareId, setSelectedSoftwareId] = useState<string | null>(null);
-  const [previousIdn, setPreviousIdn] = useState<string>(computer.idn);
+  const [previousIdn, setPreviousIdn] = useState<string | undefined>(computer.idn);
 
   useEffect(() => {
     setFormData(computer);
@@ -32,7 +33,7 @@ export default function ComputerForm({ computer, onSubmit, onChange }: Props) {
       setLabelLevel1(parsed.labelLevels[0] || "");
       setLabelLevel2(parsed.labelLevels[1] || "");
       setLabelLevel3(parsed.labelLevels[2] || "");
-      // setDeviceIndex(parsed.deviceIndex);
+      setDeviceIndex(parsed.deviceIndex);
       // setNetworkIdn(parsed.networkIdn);
     } catch (err) {
       console.warn("Nevalidan IDN:", err);
@@ -48,29 +49,6 @@ export default function ComputerForm({ computer, onSubmit, onChange }: Props) {
     }
     fetchSoftware();
   }, [computer]);
-
-  // // Provera da li je IDN definisan
-  // useEffect(() => {
-  //   if (computer?.idn) {
-  //     try {
-  //       const parsed = parseComputerIdn(computer.idn || "");
-  //       const label = parsed.labelLevels.join(":");
-
-  //       setLabelLevel1(parsed.labelLevels[0] || "");
-  //       setLabelLevel2(parsed.labelLevels[1] || "");
-  //       setLabelLevel3(parsed.labelLevels[2] || "");
-  //       // setDeviceIndex(parsed.deviceIndex);
-  //       // setNetworkIdn(parsed.networkIdn);
-
-  //       setFormData({
-  //         ...computer,
-  //         label,
-  //       });
-  //     } catch (error) {
-  //       console.error("Greška pri parsiranju IDN-a:", error);
-  //     }
-  //   }
-  // }, [computer.idn]);
 
   const selectedSoftware = installedSoftwareList.find((s) => s.idn === selectedSoftwareId);
 
@@ -110,8 +88,26 @@ export default function ComputerForm({ computer, onSubmit, onChange }: Props) {
     if (newIdn !== formData.idn) {
       setPreviousIdn(formData.idn); // zapamti staru vrednost
       handleChange("idn", newIdn);
+      setPreviousIdn(undefined);
     } else {
       handleChange("idn", newIdn);
+    }
+  };
+  // ⬇️ ažurira device_index i ceo idn
+  const updateDeviceIndex = (device_index_string: string) => {
+    let device_index = Number(device_index_string);
+    if (!isNaN(device_index)) {
+      const parsed = parseComputerIdn(formData.idn);
+      const newIdn = generateComputerIdn(parsed.labelLevels, device_index, parsed.networkIdn, parsed.suffix);
+
+      // dodaj i previous_idn samo ako se IDN promeni
+      if (newIdn !== formData.idn) {
+        setPreviousIdn(formData.idn); // zapamti staru vrednost
+        handleChange("idn", newIdn);
+        setPreviousIdn(undefined);
+      } else {
+      //  handleChange("idn", newIdn);
+      }
     }
   };
   // azurira Software
@@ -137,15 +133,15 @@ export default function ComputerForm({ computer, onSubmit, onChange }: Props) {
         key={computer.idn}
         onSubmit={(e) => {
           e.preventDefault();
-       //   onSubmit(formData);
+          //   onSubmit(formData);
           handleSubmit();
         }}
         className="space-y-4"
       >
-        <h3 className="text-lg font-semibold">Edit Computer: {formData.idn}</h3>
+        <h3 className="text-lg font-semibold">  Edit Computer: {formData.idn}</h3>
 
         <div className="flex flex-col">
-          <label className="mb-1 font-medium">Data:</label>
+          <label className="mb-1 font-medium">Data:  </label>
           <input
             type="text"
             className="border px-2 py-1 rounded"
@@ -155,7 +151,7 @@ export default function ComputerForm({ computer, onSubmit, onChange }: Props) {
         </div>
         <div>
           {/* Label Level 1 */}
-          <label>Label Level 1:</label>
+          <label>  Label Level 1:   </label>
           <select value={labelLevel1} onChange={(e) => updateLabelLevel(1, e.target.value)}>
             <option value="">--Izaberi--</option>
             <option value="finance">finance</option>
@@ -164,7 +160,7 @@ export default function ComputerForm({ computer, onSubmit, onChange }: Props) {
           </select>
 
           {/* Label Level 2 */}
-          <label>Label Level 2:</label>
+          <label>  Label Level 2:  </label>
           <select value={labelLevel2} onChange={(e) => updateLabelLevel(2, e.target.value)}>
             <option value="">--Izaberi--</option>
             <option value="internal">internal</option>
@@ -174,7 +170,7 @@ export default function ComputerForm({ computer, onSubmit, onChange }: Props) {
           </select>
 
           {/* Label Level 3 */}
-          <label>Label Level 3:</label>
+          <label>  Label Level 3:  </label>
           <select value={labelLevel3} onChange={(e) => updateLabelLevel(3, e.target.value)}>
             <option value="">--Izaberi--</option>
             <option value="senior">senior</option>
@@ -182,8 +178,13 @@ export default function ComputerForm({ computer, onSubmit, onChange }: Props) {
             <option value="internal">internal</option>
           </select>
         </div>
+        
+        {/* Device Index */}
+        <label>Device Index:  </label>
+        <input type="number" value={device_index ?? ""} onChange={(e) => updateDeviceIndex(e.target.value)} />
+        <br />
         {/* Network IDN */}
-        <label>Network IDN:</label>
+        <label>Network IDN:  </label>
         <select
           value={formData.network_idn?.[0] ?? ""}
           onChange={(e) => {
@@ -191,26 +192,22 @@ export default function ComputerForm({ computer, onSubmit, onChange }: Props) {
             handleChange("network_idn", [newNetwork]);
           }}
         >
-          <option value="">--Izaberi mrežu--</option>
+          <option value="">-- mrežu--</option>
           <option value={0}>0</option>
           <option value={1}>1</option>
           <option value={2}>2</option>
           <option value={3}>3</option>
           <option value={4}>4</option>
         </select>
-
-        {/* Device Index */}
-        <label>Device Index:</label>
-        <input type="number" value={formData.device_index ?? ""} onChange={(e) => handleChange("device_index", Number(e.target.value))} />
-
+        <br />
         {/* Suffix (opcionalan) */}
-        <label>Suffix:</label>
+        <label>Suffix:  </label>
         <input type="text" value={formData.suffix ?? ""} onChange={(e) => handleChange("suffix", e.target.value)} placeholder="npr. #1" />
         {/* prikaz trenutne vrednosti IDN */}
         <div style={{ marginTop: "1rem", fontWeight: "bold" }}>IDN: {formData.idn}</div>
 
         <div className="flex flex-col">
-          <label className="mb-1 font-medium">Provides Hardware Quota:</label>
+          <label className="mb-1 font-medium">Provides Hardware Quota:  </label>
           <input
             type="number"
             className="border px-2 py-1 rounded"
