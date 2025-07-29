@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import ComputerForm from "../components/ComputerForm_1";
 import { getComputerById, updateComputer } from "../api/computers";
-import {
-  getInstalledSoftwareByComputerId, updateInstalledSoftware
+import { getInstalledSoftwareByComputerId, updateInstalledSoftware
 } from "../api/installedSoftware";
 import type { Computer as BaseComputer } from "../types/computer";
 type Computer = BaseComputer & { previous_idn?: string };
@@ -58,13 +57,10 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
   };
   const handleSave = async (modifiedData: any) => {
     try {
-      const response = await axios.post(
-        "http://localhost:5000/save",
-        modifiedData
-      );
-      alert(`Uspešno sačuvano: ${response.data.filename}`);
+      const response = await axios.post("http://localhost:5000/save", modifiedData);
+      alert(`Uspešno sačuvano u fajl: ${response.data.filename}`);
     } catch (error) {
-      console.error("Greška pri snimanju:", error);
+      console.error("Greška pri snimanju u fajl!:", error);
       alert("Greška pri čuvanju fajla.");
     }
   };
@@ -81,13 +77,34 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
 
       <button
         onClick={async () => {
+          try {
+            // 1. Priprema podataka za spremanje u bazu
+            // Proslijedimo cijeli 'computer' objekt s 'previous_idn'
+            await handleComputerUpdate(computer);
+
+            // 2. Priprema podataka za spremanje u fajl
+            // OVDJE UKLANJAMO 'previous_idn' PRIJE SLANJA NA /save ENDPOINT
+            const { previous_idn: _, ...computerToSaveToFile } = computer;
+
+            await handleSave({
+              [computerToSaveToFile.idn]: { // Koristimo novi objekt bez previous_idn
+                ...computerToSaveToFile,
+                installed_software: Object.fromEntries(softwareList.map((s) => [s.idn, s])),
+              },
+            });
+
+            alert("Kompjuter uspešno sačuvan u bazi i kao fajl!");
+          } catch (error) {
+            console.error("Greška prilikom čuvanja:", error);
+            alert("Došlo je do greške prilikom čuvanja.");
+          }
           // await handleComputerUpdate(computer); // snimi u bazu
-          await handleSave({
-            [computer.idn]: {
-              ...computer,
-              installed_software: Object.fromEntries(softwareList.map((s) => [s.idn, s])),
-            },
-          }); // snimi fajl
+          // await handleSave({
+          //   [computer.idn]: {
+          //     ...computer,
+          //     installed_software: Object.fromEntries(softwareList.map((s) => [s.idn, s])),
+          //   },
+          // }); // snimi fajl
        //   await handleComputerUpdate(computer); // snimi u bazu
         }}
         className="px-4 py-2 bg-purple-600 text-white rounded mt-4"

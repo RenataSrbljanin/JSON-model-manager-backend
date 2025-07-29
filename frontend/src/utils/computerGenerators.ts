@@ -1,4 +1,4 @@
-// src/utils/computerGenerators.ts
+// src/utils/computerGenerators.ts !!!!! ONLY FOR TESTING  !!!
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -6,7 +6,7 @@ export function generateComputerIdn(networkIndex = 0, ordinal = 0): string {
   return `None:${networkIndex}:${ordinal}`;
 }
 
-export function generateComputerId(
+export function generateComputerId(  // koristim ga samo u testu
   location: string,
   rack: number,
   position: number
@@ -33,7 +33,6 @@ export function generateSoftwareDataLinks(
       }
     }
   }
-
   return result;
 }
 
@@ -48,7 +47,6 @@ export function generateStoredCredentials(
       credentials.push(`${prefix}.${uuidv4()}`);
     }
   }
-
   return credentials;
 }
 
@@ -61,6 +59,5 @@ export function generateSoftwareIdnMapping(
     const shortIdn = fullIdn.split(">")[1]; // "cpe:/...#uuid"
     mapping[shortIdn] = fullIdn;
   }
-
   return mapping;
 }

@@ -31,7 +31,6 @@ export function parseSoftwareIdn(softwareIdn: string): SoftwareIdnComponents | n
       uuid: match[3],
     };
   }
-
   return null; // Parsiranje nije uspjelo
 }
 

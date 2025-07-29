@@ -1,5 +1,6 @@
+
 export interface Software {
-  accepts_credentials: string[]; // 1
+  accepts_credentials: string[]; // 1 // Relationship
   compatible_data_types: string[]; //2
   computer_idn: string; // 3
   cpe_idn: string; // 4
@@ -8,7 +9,7 @@ export interface Software {
   idn: string; // 6
   idn_variant: string; // 7
 
-  installed_combination: [string, "L" | "N"][]; // 8
+  installed_combination: [string, "L" | "N"| "U" ][]; // 8
   is_database: boolean | string; // 9
   local_dependencies: string[]; // 10
   max_client_count: number; // 11

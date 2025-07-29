@@ -88,7 +88,6 @@ export default function ComputerForm({ computer, onSubmit, onChange }: Props) {
     if (newIdn !== formData.idn) {
       setPreviousIdn(formData.idn); // zapamti staru vrednost
       handleChange("idn", newIdn);
-      setPreviousIdn(undefined);
     } else {
       handleChange("idn", newIdn);
     }

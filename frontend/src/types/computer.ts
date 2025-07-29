@@ -14,7 +14,7 @@ export type Computer = {
   stored_credentials: Credential[]; // 9
   used_hardware_quota: number;  // 10
 
-  label?: string;
+  // label?: string;
   device_index?: number;
   suffix?: string;
   previous_idn?: string; 
