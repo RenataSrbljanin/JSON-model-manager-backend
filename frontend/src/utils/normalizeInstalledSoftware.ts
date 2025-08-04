@@ -1,8 +1,6 @@
 import type { Software } from "../types/software";
 
-export function normalizeInstalledSoftware(
-  sw: Software
-): Software {
+export function normalizeInstalledSoftware(sw: Software): Software {
   return {
     ...sw,
     person_group_id: sw.person_group_id ?? "",

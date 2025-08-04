@@ -25,7 +25,6 @@ def get_all():
 
     return jsonify(many_schema.dump(all_items)), 200
 
-
 @computer_bp.route("/<string:idn>", methods=["GET"])
 def get_one(idn):
     item = Computer.query.get_or_404(idn)
@@ -42,30 +41,45 @@ def create():
 
 @computer_bp.route("/<string:previous_idn>", methods=["PUT"])
 def update(previous_idn):
-    
-    # prvo uzimam podatke koje frontend pošalje u PUT zahtevu:
-    data = request.get_json() #To su novi, izmenjeni podaci koje je korisnik uneo u formi
-    
-    # onda pronalazim objekat u bazi po previous_idn:
-    item = Computer.query.get_or_404(previous_idn) 
-    
-    # validiram JSON (da su svi tipovi i potrebna polja OK), i onda
-    # konvertuje JSON u Python dict sa validiranim vrednostima:
-    validated = schema.load(data)
-    
-    new_idn = data.get("idn")
-    
-    if previous_idn != new_idn:
-        db.session.delete(item)
-        new_item = Computer(**validated)
-        db.session.add(new_item)
-        db.session.commit()
-        return jsonify(schema.dump(new_item)), 200
-    else:
-        for key, value in validated.items():
-            setattr(item, key, value)
-        db.session.commit()
-        return jsonify(schema.dump(item)), 200
+    try:
+        # prvo uzimam podatke koje frontend pošalje u PUT zahtevu:
+        data = request.get_json() #To su novi, izmenjeni podaci koje je korisnik uneo u formi
+
+        # onda pronalazim objekat u bazi po previous_idn:
+        item = Computer.query.get_or_404(previous_idn) 
+
+        # validiram JSON (da su svi tipovi i potrebna polja OK), i onda
+        # konvertuje JSON u Python dict sa validiranim vrednostima:
+        validated = schema.load(data)
+
+        new_idn = data.get("idn")
+
+        if previous_idn != new_idn:
+            # Ako se IDN menja, moramo da obradimo i zavisne InstalledSoftware entitete            
+            # 1. Pronalazimo sve InstalledSoftware entitete povezane sa starim IDN-om
+            from app.models.installed_software import InstalledSoftware
+            installed_software_items = InstalledSoftware.query.filter_by(
+                computer_idn=previous_idn
+            ).all()
+
+            db.session.delete(item)
+            new_item = Computer(**validated)
+            db.session.add(new_item)
+            # 4. Ažuriramo sve povezane InstalledSoftware entitete sa novim IDN-om:
+            for software_item in installed_software_items:
+                software_item.computer_idn = new_idn
+
+            db.session.commit()
+            return jsonify(schema.dump(new_item)), 200
+        else:
+            # Ako se IDN ne menja, samo ažuriramo ostala polja
+            for key, value in validated.items():
+                setattr(item, key, value)
+            db.session.commit()
+            return jsonify(schema.dump(item)), 200
+    except Exception as e:
+        db.session.rollback() # Vraćamo sesiju u prethodno stanje u slučaju greške
+        return jsonify({"error": str(e)}), 500
 
 @computer_bp.route("/<string:idn>", methods=["DELETE"])
 def delete(idn):

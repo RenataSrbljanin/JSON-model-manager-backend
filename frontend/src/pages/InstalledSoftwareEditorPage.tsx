@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import InstalledSoftwareForm from "../components/InstalledSoftwareForm";
 import {
   getInstalledSoftwareById,
-  updateInstalledSoftware,
-} from "../api/installedSoftware";
+  updateInstalledSoftware_with_constant_computerIDN,
+} from "../api/installedSoftware_old";
 import type { Software } from "../types/software";
 
 export default function InstalledSoftwareEditorPage() {
@@ -19,7 +19,7 @@ export default function InstalledSoftwareEditorPage() {
 
   const handleSubmit = async (updated: Software) => {
     if (!software) return;
-    await updateInstalledSoftware(software.idn, updated);
+    await updateInstalledSoftware_with_constant_computerIDN(software.idn, updated);
     alert("Software updated.");
   };
 

@@ -1,30 +1,32 @@
 import { useEffect, useState } from "react";
-// Uklanjamo import za getInstalledSoftwareByComputerId i updateInstalledSoftware_with_constant_computerIDN
-// jer se softverom upravlja u roditeljskoj komponenti
+import { getInstalledSoftwareByComputerId, updateInstalledSoftware_with_constant_computerIDN } 
+from "../api/installedSoftware_old";
 import type { Software } from "../types/software";
 import InstalledSoftwareForm from "./InstalledSoftwareForm";
-import { generateComputerIdn, parseComputerIdn } from "../utils/computer_idn_helpers";
+import { generateComputerIdn } from "../utils/computer_idn_helpers";
 import type { Computer } from "../types/computer";
+import { parseComputerIdn } from "../utils/computer_idn_helpers";
 
-// Ažuriran tip Props da uključuje softwareList i onSoftwareUpdate
 type Props = {
   computer: Computer;
-  softwareList: Software[]; // Lista softvera je sada prop
+  onSubmit: (comp: Computer) => void;
   onChange: (updated: Computer) => void;
-  onSoftwareUpdate: (currentIdn: string, newIdn: string, software: Partial<Software>) => Promise<any>;
 };
 
-export default function ComputerForm({ computer, softwareList, onChange, onSoftwareUpdate }: Props) {
+export default function ComputerForm({ computer, onSubmit, onChange }: Props) {
   const [formData, setFormData] = useState<Computer>(computer);
-  // lokalni state za nivoe label-a:
+  //lokalni state za nivoe label-a:
   const [labelLevel1, setLabelLevel1] = useState("");
   const [labelLevel2, setLabelLevel2] = useState("");
   const [labelLevel3, setLabelLevel3] = useState("");
   const [device_index, setDeviceIndex] = useState<number | undefined>(undefined);
+  const [installedSoftwareList, setInstalledSoftwareList] = useState<Software[]>([]);
   const [selectedSoftwareId, setSelectedSoftwareId] = useState<string | null>(null);
+  const [previousIdn, setPreviousIdn] = useState<string | undefined>(computer.idn);
 
   useEffect(() => {
     setFormData(computer);
+    setPreviousIdn(computer.idn); // osveži kada se učita novi computer
 
     // učitavanje početnih vrednosti labelLevelX iz IDN-a
     try {
@@ -33,15 +35,40 @@ export default function ComputerForm({ computer, softwareList, onChange, onSoftw
       setLabelLevel2(parsed.labelLevels[1] || "");
       setLabelLevel3(parsed.labelLevels[2] || "");
       setDeviceIndex(parsed.deviceIndex);
+      // setNetworkIdn(parsed.networkIdn);
     } catch (err) {
       console.warn("Nevalidan IDN:", err);
     }
+
+    async function fetchSoftware() {
+      try {
+        const software = await getInstalledSoftwareByComputerId(computer.idn);
+        setInstalledSoftwareList(software);
+      } catch (error) {
+        console.error("Greška pri učitavanju softvera:", error);
+      }
+    }
+    fetchSoftware();
   }, [computer]);
 
-  const selectedSoftware = softwareList.find((s) => s.idn === selectedSoftwareId);
+  const selectedSoftware = installedSoftwareList.find((s) => s.idn === selectedSoftwareId);
 
   const handleChange = (field: keyof Computer, value: any) => {
     let updated: Computer = { ...formData, [field]: value } as Computer;
+
+    // // Ako se menja `idn`, proveravamo da li se razlikuje od originalnog
+    // if (field === "idn" && value !== originalIdn) {
+    //   updated = { ...updated, previous_idn: originalIdn };
+    // }
+    // // Ako su svi delovi potrebni za IDN dostupni, ažuriraj idn
+    // const labelLevels = updated.label?.split(":").map((part) => part.trim()) ?? [];
+    // const deviceIndex = updated.device_index;
+    // const networkIdn = updated.network_idn?.[0];
+    // const suffix = updated.suffix;
+
+    // if (labelLevels.length && typeof deviceIndex === "number" && typeof networkIdn === "number") {
+    //   updated.idn = generateComputerIdn(labelLevels, deviceIndex, networkIdn, suffix);
+
     setFormData(updated);
     onChange(updated);
   };
@@ -55,37 +82,66 @@ export default function ComputerForm({ computer, softwareList, onChange, onSoftw
     if (level === 2) setLabelLevel2(value);
     if (level === 3) setLabelLevel3(value);
 
-    // Moramo osigurati da se parsira trenutni formData.idn
     const parsed = parseComputerIdn(formData.idn);
     const newIdn = generateComputerIdn(newLevels, parsed.deviceIndex, parsed.networkIdn, parsed.suffix);
 
-    // U ovoj komponenti samo ažuriramo lokalni state i obaveštavamo roditelja
-    handleChange("idn", newIdn);
+    // dodaj i previous_idn samo ako se IDN promeni
+    if (newIdn !== formData.idn) {
+      setPreviousIdn(formData.idn); // zapamti staru vrednost
+      handleChange("idn", newIdn);
+    } else {
+      handleChange("idn", newIdn);
+    }
   };
-
   // ⬇️ ažurira device_index i ceo idn
   const updateDeviceIndex = (device_index_string: string) => {
     let device_index = Number(device_index_string);
     if (!isNaN(device_index)) {
       const parsed = parseComputerIdn(formData.idn);
       const newIdn = generateComputerIdn(parsed.labelLevels, device_index, parsed.networkIdn, parsed.suffix);
-      handleChange("idn", newIdn);
+
+      // dodaj i previous_idn samo ako se IDN promeni
+      if (newIdn !== formData.idn) {
+        setPreviousIdn(formData.idn); // zapamti staru vrednost
+        handleChange("idn", newIdn);
+        setPreviousIdn(undefined);
+      } else {
+      //  handleChange("idn", newIdn);
+      }
     }
   };
-
+  // azurira Software
+  const handleSoftwareUpdate = async (updated: Software) => {
+    try {
+      await updateInstalledSoftware_with_constant_computerIDN(updated.idn, updated);
+      const updatedList = installedSoftwareList.map((s) => (s.idn === updated.idn ? updated : s));
+      setInstalledSoftwareList(updatedList);
+    } catch (error) {
+      console.error("Greška pri ažuriranju softvera:", error);
+    }
+  };
+  const handleSubmit = () => {
+    const dataToSubmit = {
+      ...formData,
+      previous_idn: previousIdn, // šaljemo i prethodni IDN
+    };
+    onSubmit(dataToSubmit);
+  };
   return (
     <div className="space-y-4">
       <form
         key={computer.idn}
         onSubmit={(e) => {
           e.preventDefault();
+          //   onSubmit(formData);
+          handleSubmit();
         }}
         className="space-y-4"
       >
-        <h3 className="text-lg font-semibold">Uređivanje računara: {formData.idn}</h3>
+        <h3 className="text-lg font-semibold">  Edit Computer: {formData.idn}</h3>
 
         <div className="flex flex-col">
-          <label className="mb-1 font-medium">Data:</label>
+          <label className="mb-1 font-medium">Data:  </label>
           <input
             type="text"
             className="border px-2 py-1 rounded"
@@ -95,7 +151,7 @@ export default function ComputerForm({ computer, softwareList, onChange, onSoftw
         </div>
         <div>
           {/* Label Level 1 */}
-          <label>Label Level 1:</label>
+          <label>  Label Level 1:   </label>
           <select value={labelLevel1} onChange={(e) => updateLabelLevel(1, e.target.value)}>
             <option value="">--Izaberi--</option>
             <option value="finance">finance</option>
@@ -104,7 +160,7 @@ export default function ComputerForm({ computer, softwareList, onChange, onSoftw
           </select>
 
           {/* Label Level 2 */}
-          <label>Label Level 2:</label>
+          <label>  Label Level 2:  </label>
           <select value={labelLevel2} onChange={(e) => updateLabelLevel(2, e.target.value)}>
             <option value="">--Izaberi--</option>
             <option value="internal">internal</option>
@@ -114,7 +170,7 @@ export default function ComputerForm({ computer, softwareList, onChange, onSoftw
           </select>
 
           {/* Label Level 3 */}
-          <label>Label Level 3:</label>
+          <label>  Label Level 3:  </label>
           <select value={labelLevel3} onChange={(e) => updateLabelLevel(3, e.target.value)}>
             <option value="">--Izaberi--</option>
             <option value="senior">senior</option>
@@ -124,11 +180,11 @@ export default function ComputerForm({ computer, softwareList, onChange, onSoftw
         </div>
         
         {/* Device Index */}
-        <label>Device Index:</label>
+        <label>Device Index:  </label>
         <input type="number" value={device_index ?? ""} onChange={(e) => updateDeviceIndex(e.target.value)} />
         <br />
         {/* Network IDN */}
-        <label>Network IDN:</label>
+        <label>Network IDN:  </label>
         <select
           value={formData.network_idn?.[0] ?? ""}
           onChange={(e) => {
@@ -145,13 +201,13 @@ export default function ComputerForm({ computer, softwareList, onChange, onSoftw
         </select>
         <br />
         {/* Suffix (opcionalan) */}
-        <label>Suffix:</label>
+        <label>Suffix:  </label>
         <input type="text" value={formData.suffix ?? ""} onChange={(e) => handleChange("suffix", e.target.value)} placeholder="npr. #1" />
         {/* prikaz trenutne vrednosti IDN */}
         <div style={{ marginTop: "1rem", fontWeight: "bold" }}>IDN: {formData.idn}</div>
 
         <div className="flex flex-col">
-          <label className="mb-1 font-medium">Provides Hardware Quota:</label>
+          <label className="mb-1 font-medium">Provides Hardware Quota:  </label>
           <input
             type="number"
             className="border px-2 py-1 rounded"
@@ -159,6 +215,7 @@ export default function ComputerForm({ computer, softwareList, onChange, onSoftw
             onChange={(e) => handleChange("provides_hardware_quota", parseFloat(e.target.value))}
           />
         </div>
+
       </form>
 
       {/* Softver sekcija */}
@@ -166,7 +223,7 @@ export default function ComputerForm({ computer, softwareList, onChange, onSoftw
         <h4 className="text-md font-semibold">Instalirani softver:</h4>
         <select className="border rounded px-2 py-1 mt-2" onChange={(e) => setSelectedSoftwareId(e.target.value)} value={selectedSoftwareId ?? ""}>
           <option value="">-- Odaberi softver za editovanje --</option>
-          {softwareList.map((sw) => (
+          {installedSoftwareList.map((sw) => (
             <option key={sw.idn} value={sw.idn}>
               {sw.idn}
             </option>
@@ -175,7 +232,7 @@ export default function ComputerForm({ computer, softwareList, onChange, onSoftw
 
         {selectedSoftware && (
           <div className="border p-4 mt-4 rounded bg-gray-50 shadow-inner">
-            <InstalledSoftwareForm software={selectedSoftware} onSubmit={(updatedSoftware) => onSoftwareUpdate(updatedSoftware.idn, formData.idn, updatedSoftware)} />
+            <InstalledSoftwareForm software={selectedSoftware} onSubmit={handleSoftwareUpdate} />
           </div>
         )}
       </div>

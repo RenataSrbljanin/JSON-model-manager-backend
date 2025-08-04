@@ -14,17 +14,11 @@ export function parseComputerIdn(idn: string): ParsedComputerIdn {
   if (parts.length < 3) {
     throw new Error(`IDN format nije validan: ${idn}`);
   }
-
   const labelLevels = parts.slice(0, parts.length - 2);
   const deviceIndex = parseInt(parts[parts.length - 2], 10);
   const networkIdn = parseInt(parts[parts.length - 1], 10);
 
-  return {
-    labelLevels,
-    deviceIndex,
-    networkIdn,
-    suffix,
-  };
+  return {labelLevels, deviceIndex, networkIdn, suffix};
 }
 
 // Funkcija koja generiše idn iz delova
