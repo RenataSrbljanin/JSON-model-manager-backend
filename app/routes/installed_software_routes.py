@@ -16,14 +16,17 @@ def get_all():
     return jsonify(many_schema.dump(all_items)), 200
 
 
-@installed_software_bp.route("/<string:idn>", methods=["GET"])
+@installed_software_bp.route("/<path:idn>", methods=["GET"])
 def get_one(idn):
     item = InstalledSoftware.query.get_or_404(idn)
     return jsonify(schema.dump(item)), 200
 
 
-@installed_software_bp.route("/computer/<string:computer_idn>", methods=["GET"])
+@installed_software_bp.route("/computer/<path:computer_idn>", methods=["GET", 'OPTIONS'])
 def get_installed_software_by_computer(computer_idn):
+    if request.method == 'OPTIONS':
+    # Vrati 200 OK za preflight OPTIONS zahtev
+        return '', 200
     items = InstalledSoftware.query.filter_by(computer_idn=computer_idn).all()
     return jsonify(many_schema.dump(items)), 200
 
@@ -38,8 +41,11 @@ def create():
     return jsonify(schema.dump(new_item)), 201
 
 
-@installed_software_bp.route("/<string:idn>", methods=["PUT"])
+@installed_software_bp.route("/<path:idn>", methods=["PUT", 'OPTIONS'])
 def update(idn):
+    if request.method == 'OPTIONS':
+        # Vrati 200 OK za preflight OPTIONS zahtev
+        return '', 200
     item = InstalledSoftware.query.get_or_404(idn)
     data = request.get_json()
     validated = schema.load(data)
@@ -49,7 +55,7 @@ def update(idn):
     return jsonify(schema.dump(item)), 200
 
 
-@installed_software_bp.route("/<string:idn>", methods=["DELETE"])
+@installed_software_bp.route("/<path:idn>", methods=["DELETE"])
 def delete(idn):
     item = InstalledSoftware.query.get_or_404(idn)
     db.session.delete(item)
