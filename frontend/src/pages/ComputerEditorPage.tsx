@@ -78,6 +78,7 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
       console.log("Podaci za računar:", computerToUpdateDb);
 
       let finalSoftwareIdnsForComputer: string[] = [];
+      let newSoftwareDataLinks: { [key: string]: string[] } = {}; // Za ažurirane softverske linkove
 
       // Provera da li se IDN računara promenio
       if (previous_idn !== new_computer_idn) {
@@ -104,17 +105,36 @@ export default function ComputerEditorPage({ idn }: { idn: string }) {
           return `${new_computer_idn}>${cpeIdnAndUuid}`;
         });
 
-        // // 3. Programska navigacija na novi URL, ako se IDN promenio
-        // if (new_computer_idn !== idn) {
-        //   navigate(`/computers/${new_computer_idn}`);
-        // }
+        // --- AŽURIRANJE software_data_links ---
+        if (computerToUpdateDb.software_data_links) {
+          for (const oldSoftwareIdn in computerToUpdateDb.software_data_links) {
+            if (Object.prototype.hasOwnProperty.call(computerToUpdateDb.software_data_links, oldSoftwareIdn)) {
+              const dataLinks = computerToUpdateDb.software_data_links[oldSoftwareIdn];
+              // Izdvoji samo deo IDN-a softvera nakon prvog '>' (npr. cpe:/a:microsoft:.net_framework:4.8#uuid)
+              const parts = oldSoftwareIdn.split('>');
+              const cpeIdnAndUuid = parts.length > 1 ? parts[1] : ''; // Očekujemo da uvek postoji drugi deo
+
+              if (cpeIdnAndUuid) {
+                  const newSoftwareIdnKey = `${new_computer_idn}>${cpeIdnAndUuid}`;
+                  newSoftwareDataLinks[newSoftwareIdnKey] = dataLinks;
+              } else {
+                  // Ako format IDN-a nije očekivan, zadrži originalni key ili ga ignoriši
+                  console.warn(`Neočekivani format software IDN ključa u software_data_links: ${oldSoftwareIdn}. Neće biti ažuriran.`);
+                  newSoftwareDataLinks[oldSoftwareIdn] = dataLinks;
+              }
+            }
+          }
+        }
       } else {
         // Ako se IDN računara NIJE promenio, lista IDN-ova softvera ostaje ista
         finalSoftwareIdnsForComputer = softwareList.map(s => s.idn);
-      }
+        // Ako se computer IDN nije promenio, zadržavamo postojeće software_data_links
+        newSoftwareDataLinks = computerToUpdateDb.software_data_links || {};
+ }
 
       // 4. Ažuriraj 'installed_software_idns' atribut u objektu računara koji se šalje u bazu
       computerToUpdateDb.installed_software_idns = finalSoftwareIdnsForComputer;
+      computerToUpdateDb.software_data_links = newSoftwareDataLinks; // Ažurira objekat pre slanja
 
       // 5. Ažuriraj računar u bazi sa KONAČNIM podacima (uključujući ažurirane installed_software_idns)
       await updateComputerById(previous_idn, computerToUpdateDb);
