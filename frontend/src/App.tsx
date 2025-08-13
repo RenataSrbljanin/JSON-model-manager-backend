@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ComputerEditorPage from "./pages/ComputerEditorPage_predlozeni";
+import ComputerEditorPage from "./pages/ComputerEditorPage";
 import InstalledSoftwareEditorPage from "./pages/InstalledSoftwareEditorPage";
 import HomePage from "./pages/HomePage";
 
