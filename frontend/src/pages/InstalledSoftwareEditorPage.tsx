@@ -4,7 +4,7 @@ import InstalledSoftwareForm from "../components/InstalledSoftwareForm";
 import {
   getInstalledSoftwareById,
   updateInstalledSoftware_with_constant_computerIDN,
-} from "../api/installedSoftware_old";
+} from "../api/installedSoftware";
 import type { Software } from "../types/software";
 
 export default function InstalledSoftwareEditorPage() {

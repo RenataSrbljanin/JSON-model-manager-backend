@@ -35,11 +35,10 @@ export const getAllComputers_old = async (): Promise<Computer[]> => {
   return response.data;
 };
 
-export const getComputerById = async (
-  idn: string
-): Promise<Computer | null> => {
+export const getComputerById = async (idn: string): Promise<Computer | null> => {
   try {
-    const response = await axios.get<Computer>(`${BASE_URL}/${idn}`);
+    const encodedIdn = encodeURIComponent(idn); // URL-enkodovanje IDN-a
+    const response = await axios.get<Computer>(`${BASE_URL}/${encodedIdn}`);
     return response.data;
   } catch (error: any) {
     console.error("Greška prilikom dohvatanja računara:", error);
@@ -60,10 +59,17 @@ export const createComputer = async (
   return response.data;
 };
 
-export async function updateComputerbyID(previousIdn: string, data: Computer): Promise<Computer> {
-  const response = await axios.put(`${BASE_URL}/${previousIdn}`, data);
- // onComputerUpdated(); // poziva funkciju iz parent komponente da ponovo učita listu
-  return response.data;
+// Azuriraj racunar u bazi:
+export async function updateComputerbyID(
+  previousIdn: string, data: Computer): Promise<Computer> {
+    try {
+      const encodedPreviousIdn = encodeURIComponent(previousIdn); // URL-enkodovanje prethodnog IDN-a
+      const response = await axios.put<Computer>(`${BASE_URL}/${encodedPreviousIdn}`, data);
+      return response.data;
+    } catch (error) {
+      console.error("Greška prilikom ažuriranja računara u bazi:", error);
+      throw error;
+    }
 }
 
 export const deleteComputer = async (idn: string): Promise<void> => {

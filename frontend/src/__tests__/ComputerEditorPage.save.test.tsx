@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import ComputerEditorPage from "../pages/ComputerEditorPage";
+import ComputerEditorPage from "../pages/ComputerEditorPage_predlozeni";
 import axios from "axios";
 import { vi } from "vitest";
 
