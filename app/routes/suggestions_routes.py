@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify
 from app.models.credential import Credential
 from app.models.installed_software import InstalledSoftware
 from app.models.computer import Computer
-from app.models.data_model import DataModel
+from app.models.data import Data
 from app.models.firewall_rule import FirewallRule
 from app.models.software_data_link import SoftwareDataLink
 
@@ -40,20 +40,20 @@ def get_suggestions():
             {cred for comp in computers for cred in (comp.stored_credentials or [])}
         )
 
-        # Credential
+        # Credential model
         credential_ids = [c.credential_id for c in Credential.query.all()]
 
-        # SoftwareDataLinks
+        # SoftwareDataLinks model
         data_type_ids = [sdl.data_type_id for sdl in SoftwareDataLink.query.all()]
 
-        # FirewallRule
+        # FirewallRule model
         firewall_roles = sorted({rule.role_type for rule in FirewallRule.query.all()})
 
-        # DataModel
+        # Data Model
         principal_software_ids = sorted(
-            {dm.principal_software for dm in DataModel.query.all()}
+            {dm.principal_software for dm in Data.query.all()}
         )
-        data_model_types = sorted({dm.data_type for dm in DataModel.query.all()})
+        data_types = sorted({dm.data_type for dm in Data.query.all()})
 
         # Combine all suggestions
         return (
@@ -71,7 +71,7 @@ def get_suggestions():
                     "data_type_ids": data_type_ids,
                     "firewall_roles": firewall_roles,
                     "principal_software_ids": principal_software_ids,
-                    "data_model_types": data_model_types,
+                    "data_types": data_types,
                 }
             ),
             200,

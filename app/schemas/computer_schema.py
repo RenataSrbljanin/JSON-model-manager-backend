@@ -1,13 +1,11 @@
 from marshmallow import Schema, fields
 
-
 class ComputerSchema(Schema):
     idn = fields.Str(required=True)  # 2
     data = fields.List(fields.Str(), required=True)  # 1
     #  installedsoftware   # 3
     installed_software_idns = fields.List(fields.Str(), required=True)  # 4
     network_idn = fields.List(fields.Int(), required=True)  # 5
-    
     provides_hardware_quota = fields.Float(required=True)  # 6
     software_data_links = fields.Dict(  # 7
         keys=fields.Str(), values=fields.List(fields.Str()), required=True

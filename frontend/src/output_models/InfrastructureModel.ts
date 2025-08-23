@@ -8,14 +8,14 @@ import type {
 } from "./types";
 import type { Computer } from "./Computer";
 import type { Credential } from "./Credential";
-import type { DataModel } from "./DataModel";
+import type { Data } from "./Data";
 import type { FirewallRule } from "./FirewallRule";
 
 export interface InfrastructureModel {
   computers: { [idn: IDN]: Computer };
   created: Timestamp;
   credentials: { [credID: CredentialID]: Credential };
-  data: { [key: string]: DataModel };
+  data: { [key: string]: Data };
   duration: DurationString;
   firewall_rules: { [key: string]: FirewallRule };
   network_segments: { [segment: NetworkSegmentID]: IDN[] };

@@ -128,13 +128,13 @@ def upload_json():
                     "requires_hardware_quota_per_client", 0.0
                 )
 
-                software.provides_hardware_quota = sw_data.get( # computer # 6
-                    "provides_hardware_quota", 0.0
-                )
-                software.software_data_links = sw_data.get("software_data_links", {}) # computer # 7
-                software.software_idn_mapping = sw_data.get("software_idn_mapping", {}) # computer # 8
-                software.stored_credentials = sw_data.get("stored_credentials", []) # computer # 9
-                software.used_hardware_quota = sw_data.get("used_hardware_quota", 0.0) # computer # 10
+                # software.provides_hardware_quota = sw_data.get( # computer # 6
+                #     "provides_hardware_quota", 0.0
+                # )
+                # software.software_data_links = sw_data.get("software_data_links", {}) # computer # 7
+                # software.software_idn_mapping = sw_data.get("software_idn_mapping", {}) # computer # 8
+                # software.stored_credentials = sw_data.get("stored_credentials", []) # computer # 9
+                # software.used_hardware_quota = sw_data.get("used_hardware_quota", 0.0) # computer # 10
 
                 db.session.add(software)
 

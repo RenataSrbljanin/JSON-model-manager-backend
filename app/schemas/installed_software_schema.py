@@ -26,3 +26,9 @@ class InstalledSoftwareSchema(Schema):
     provides_user_services = fields.List(fields.Str(), required=True)  # 20
     requires_hardware_quota = fields.Float(required=True)  # 21
     requires_hardware_quota_per_client = fields.Float(required=True)  # 22
+
+class SoftwareSchema(Schema):
+    idn = fields.String(required=True)
+    # Dodajte ostala polja koja se nalaze u JSON-u za softver
+    cpe_idn = fields.String()
+    computer_idn = fields.String()

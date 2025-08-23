@@ -3,10 +3,10 @@ import type { Software } from "./software";
 export type Computer = {
 
   data: string[]; // 1
-  idn: string;  // 2
+  idn: string;  // 2   person_group_id:person_index:network_idn
 
   installed_software: Software[]; // 3
-  installed_software_idns: string[]; // 4
+  installed_software_idns: string[]; // 4  person_group_id:person_index:network_idn>cpe_idn#uuid
   network_idn: number[]; // 5
   provides_hardware_quota: number; // 6
   software_data_links: Record<string, string[]>;// 7

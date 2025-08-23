@@ -1,6 +1,5 @@
 from app.extensions import db
 
-
 class InstalledSoftware(db.Model):
     __tablename__ = "installed_software"
     accepts_credentials = db.Column(db.JSON, nullable=False) # 1
@@ -26,11 +25,11 @@ class InstalledSoftware(db.Model):
     requires_hardware_quota = db.Column(db.Float, nullable=False) # 21
     requires_hardware_quota_per_client = db.Column(db.Float, nullable=False) # 22
 
-    provides_hardware_quota = db.Column(db.Float, nullable=False) # computer # 6
-    software_data_links = db.Column(db.JSON, nullable=False) # computer # 7
-    software_idn_mapping = db.Column(db.JSON, nullable=False) # computer # 8
-    stored_credentials = db.Column(db.JSON, nullable=False) # computer # 9
-    used_hardware_quota = db.Column(db.Float, nullable=False) # computer # 10
+    # provides_hardware_quota = db.Column(db.Float, nullable=False) # computer # 6
+    # software_data_links = db.Column(db.JSON, nullable=False) # computer # 7
+    # software_idn_mapping = db.Column(db.JSON, nullable=False) # computer # 8
+    # stored_credentials = db.Column(db.JSON, nullable=False) # computer # 9
+    # used_hardware_quota = db.Column(db.Float, nullable=False) # computer # 10
 
     def to_dict(self):
         return {
@@ -58,9 +57,9 @@ class InstalledSoftware(db.Model):
             "requires_hardware_quota_per_client": self.requires_hardware_quota_per_client,  # 22
 
 
-            "stored_credentials": self.stored_credentials,  # computer # 6
-            "software_data_links": self.software_data_links,  # computer # 7
-            "software_idn_mapping": self.software_idn_mapping,  # computer # 8
-            "provides_hardware_quota": self.provides_hardware_quota, # computer # 9
-            "used_hardware_quota": self.used_hardware_quota,  # computer # 10
+            # "stored_credentials": self.stored_credentials,  # computer # 6
+            # "software_data_links": self.software_data_links,  # computer # 7
+            # "software_idn_mapping": self.software_idn_mapping,  # computer # 8
+            # "provides_hardware_quota": self.provides_hardware_quota, # computer # 9
+            # "used_hardware_quota": self.used_hardware_quota,  # computer # 10
         }
