@@ -71,18 +71,20 @@ def upload_json():
             computer = Computer.query.get(comp_idn)
             if not computer:
                 computer = Computer(idn=comp_idn)
-            computer.data = comp_data.get("data", [])
-            computer.network_idn = comp_data.get("network_idn", [])
-            computer.provides_hardware_quota = comp_data.get(
-                "provides_hardware_quota", 0
-            )
-            computer.used_hardware_quota = comp_data.get("used_hardware_quota", 0)
-            computer.software_idn_mapping = comp_data.get("software_idn_mapping", {})
-            computer.software_data_links = comp_data.get("software_data_links", {})
-            computer.stored_credentials = comp_data.get("stored_credentials", [])
-            computer.installed_software_idns = comp_data.get(
+            computer.data = comp_data.get("data", [])  # 1
+            # idn # 2
+            # installedsoftware   # 3
+            computer.installed_software_idns = comp_data.get( # 4
                 "installed_software_idns", []
             )
+            computer.network_idn = comp_data.get("network_idn", []) # 5
+            computer.provides_hardware_quota = comp_data.get(  # 6
+                "provides_hardware_quota", 0
+            )
+            computer.software_data_links = comp_data.get("software_data_links", {}) # 7
+            computer.software_idn_mapping = comp_data.get("software_idn_mapping", {}) # 8
+            computer.stored_credentials = comp_data.get("stored_credentials", [])  # 9
+            computer.used_hardware_quota = comp_data.get("used_hardware_quota", 0) # 10
 
             db.session.add(computer)
 
@@ -93,46 +95,46 @@ def upload_json():
                 if not software:
                     software = InstalledSoftware(idn=sw_idn)
 
-                software.computer_idn = comp_idn
-                software.idn_variant = sw_data.get("idn_variant", "")
-                software.cpe_idn = sw_data.get("cpe_idn", "")
-                software.compatible_data_types = sw_data.get(
-                    "compatible_data_types", []
-                )
-                software.accepts_credentials = sw_data.get("accepts_credentials", [])
-                software.local_dependencies = sw_data.get("local_dependencies", [])
-                software.network_dependencies = sw_data.get("network_dependencies", [])
-                software.network_idn = sw_data.get("network_idn", [])
-                software.installed_combination = sw_data.get(
+                software.accepts_credentials = sw_data.get("accepts_credentials", []) # 1
+                software.compatible_data_types = sw_data.get("compatible_data_types", [])# 2
+                software.computer_idn = comp_idn  # 3
+                software.cpe_idn = sw_data.get("cpe_idn", "") # 4
+                software.hardware_ids = sw_data.get("hardware_ids", []) # 5
+
+                software.idn_variant = sw_data.get("idn_variant", "") # 7
+                software.installed_combination = sw_data.get(  # 8
                     "installed_combination", []
                 )
-                software.provides_services = sw_data.get("provides_services", [])
-                software.provides_network_services = sw_data.get(
+                software.is_database = bool(sw_data.get("is_database", False)) # 9
+                software.local_dependencies = sw_data.get("local_dependencies", []) # 10
+                software.max_client_count = sw_data.get("max_client_count", 0) # 11
+                software.network_clients = sw_data.get("network_clients", []) # 12
+                software.network_dependencies = sw_data.get("network_dependencies", []) # 13
+                software.network_idn = sw_data.get("network_idn", [])  # 14
+                software.network_servers = sw_data.get("network_servers", []) # 15
+                software.person_group_id = sw_data.get("person_group_id")  # 16
+                software.person_index = sw_data.get("person_index", 0)  # 17
+                software.provides_network_services = sw_data.get(   # 18
                     "provides_network_services", []
                 )
-                software.provides_user_services = sw_data.get(
+                software.provides_services = sw_data.get("provides_services", []) # 19
+                software.provides_user_services = sw_data.get(   # 20
                     "provides_user_services", []
                 )
-                software.max_client_count = sw_data.get("max_client_count", 0)
-                software.requires_hardware_quota = sw_data.get(
+                software.requires_hardware_quota = sw_data.get(  # 21
                     "requires_hardware_quota", 0.0
                 )
-                software.requires_hardware_quota_per_client = sw_data.get(
+                software.requires_hardware_quota_per_client = sw_data.get( # 22
                     "requires_hardware_quota_per_client", 0.0
                 )
-                software.is_database = bool(sw_data.get("is_database", False))
-                software.hardware_ids = sw_data.get("hardware_ids", [])
-                software.person_group_id = sw_data.get("person_group_id")
-                software.person_index = sw_data.get("person_index", 0)
-                software.network_clients = sw_data.get("network_clients", [])
-                software.network_servers = sw_data.get("network_servers", [])
-                software.stored_credentials = sw_data.get("stored_credentials", [])
-                software.software_data_links = sw_data.get("software_data_links", {})
-                software.software_idn_mapping = sw_data.get("software_idn_mapping", {})
-                software.provides_hardware_quota = sw_data.get(
+
+                software.provides_hardware_quota = sw_data.get( # computer # 6
                     "provides_hardware_quota", 0.0
                 )
-                software.used_hardware_quota = sw_data.get("used_hardware_quota", 0.0)
+                software.software_data_links = sw_data.get("software_data_links", {}) # computer # 7
+                software.software_idn_mapping = sw_data.get("software_idn_mapping", {}) # computer # 8
+                software.stored_credentials = sw_data.get("stored_credentials", []) # computer # 9
+                software.used_hardware_quota = sw_data.get("used_hardware_quota", 0.0) # computer # 10
 
                 db.session.add(software)
 
