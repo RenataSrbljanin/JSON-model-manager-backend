@@ -1,4 +1,5 @@
 import type { Software } from "./software";
+import type { CredentialIDN, SoftwareIDN } from "./types";
 
 export type Computer = {
 
@@ -6,12 +7,12 @@ export type Computer = {
   idn: string;  // 2   person_group_id:person_index:network_idn
 
   installed_software: Software[]; // 3
-  installed_software_idns: string[]; // 4  person_group_id:person_index:network_idn>cpe_idn#uuid
+  installed_software_idns: SoftwareIDN[]; // 4  person_group_id:person_index:network_idn>cpe_idn#uuid
   network_idn: number[]; // 5
   provides_hardware_quota: number; // 6
   software_data_links: Record<string, string[]>;// 7
   software_idn_mapping: Record<string, string>; // 8
-  stored_credentials: Credential[]; // 9
+  stored_credentials: CredentialIDN[]; // 9
   used_hardware_quota: number;  // 10
 
   // label?: string;
@@ -28,13 +29,13 @@ export interface Employee {
   id: number;
   employee_group: string;
   employee_index: number;
-  credentials: Credential[];
+  credentials: CredentialIDN[];
 }
 
 /**
  * Represents a Credential used for accessing software or systems.
  */
-export interface Credential {
+export interface Credential_old {
   idn: string;
   has_root: boolean;
   stored_at_computer_id: string;
@@ -73,7 +74,7 @@ export interface Software_predlozeni {
   // Relationships
   dependencies: Software[];
   dependency_of: Software[];
-  accepts_credentials: Credential[];
+  accepts_credentials: Credential_old[];
   data_links: Data[];
 }
 
