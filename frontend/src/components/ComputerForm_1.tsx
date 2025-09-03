@@ -45,8 +45,12 @@ export default function ComputerForm({ computer, softwareList, onChange, onSoftw
         setFormData(updated);
         onChange(updated);
     };
-
-    // ⬇️ ažurira labelLevels i ceo idn
+    const handleChange_some = (updates: Partial<Computer>) => {
+        let updated: Computer = { ...formData, ...updates };
+        setFormData(updated);
+        onChange(updated);
+    };
+    // ⬇ ažurira labelLevels i ceo idn
     const updateLabelLevel = (level: 1 | 2 | 3, value: string) => {
         const newLevels = [labelLevel1, labelLevel2, labelLevel3];
         newLevels[level - 1] = value;
@@ -70,6 +74,20 @@ export default function ComputerForm({ computer, softwareList, onChange, onSoftw
             const parsed = parseComputerIdn(formData.idn);
             const newIdn = generateComputerIdn(parsed.labelLevels, device_index, parsed.networkIdn, parsed.suffix);
             handleChange("idn", newIdn);
+        }
+    };
+
+    // ⬇️ ažurira network_idn_string i ceo idn
+    const updateNetworkIDN = (network_idn_string: string) => {
+        let newNetwork = Number(network_idn_string);
+        if (!isNaN(newNetwork)) {
+            const parsed = parseComputerIdn(formData.idn);
+            const newIdn = generateComputerIdn(parsed.labelLevels, parsed.deviceIndex, newNetwork, parsed.suffix);
+            handleChange_some({
+                network_idn: [newNetwork],
+                idn: newIdn
+            });
+        //    handleChange("idn", newIdn);
         }
     };
 
@@ -106,14 +124,14 @@ export default function ComputerForm({ computer, softwareList, onChange, onSoftw
 
                     {/* Label Level 2 */}
                     <label htmlFor="level2_input">Label Level 2:</label>
-                        <select id="level2_input" value={labelLevel2} onChange={(e) => updateLabelLevel(2, e.target.value)}>
-                            <option value="">--Izaberi--</option>
-                            <option value="internal">internal</option>
-                            <option value="external">external</option>
-                            <option value="windows">windows</option>
-                            <option value="banking">banking</option>
-                        </select>
-                    
+                    <select id="level2_input" value={labelLevel2} onChange={(e) => updateLabelLevel(2, e.target.value)}>
+                        <option value="">--Izaberi--</option>
+                        <option value="internal">internal</option>
+                        <option value="external">external</option>
+                        <option value="windows">windows</option>
+                        <option value="banking">banking</option>
+                    </select>
+
                     {/* Label Level 3 */}
                     <label htmlFor="level3_input">Label Level 3:</label>
                     <select id="level3_input" value={labelLevel3} onChange={(e) => updateLabelLevel(3, e.target.value)}>
@@ -133,10 +151,7 @@ export default function ComputerForm({ computer, softwareList, onChange, onSoftw
                 <select
                     id="network_idn_input"
                     value={formData.network_idn?.[0] ?? ""}
-                    onChange={(e) => {
-                        const newNetwork = Number(e.target.value);
-                        handleChange("network_idn", [newNetwork]);
-                    }}
+                    onChange={(e) => updateNetworkIDN(e.target.value)}
                 >
                     <option value="">-- mrežu--</option>
                     <option value={0}>0</option>
