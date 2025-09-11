@@ -87,7 +87,18 @@ export default function ComputerForm({ computer, softwareList, onChange, onSoftw
                 network_idn: [newNetwork],
                 idn: newIdn
             });
-        //    handleChange("idn", newIdn);
+        }
+    };
+        // ⬇️ ažurira network_idn_string i ceo idn
+    const updateSuffix = (suffix_string: string) => {
+        let newSuffix = Number(suffix_string);
+        if (!isNaN(newSuffix)) {
+            const parsed = parseComputerIdn(formData.idn);
+            const newIdn = generateComputerIdn(parsed.labelLevels, parsed.deviceIndex, parsed.networkIdn, suffix_string);
+            handleChange_some({
+                suffix: suffix_string,
+                idn: newIdn
+            });
         }
     };
 
@@ -163,7 +174,10 @@ export default function ComputerForm({ computer, softwareList, onChange, onSoftw
                 <br />
                 {/* Suffix (opcionalan) */}
                 <label htmlFor="suffix_input">Suffix:</label>
-                <input id="suffix_input" type="text" value={formData.suffix ?? ""} onChange={(e) => handleChange("suffix", e.target.value)} placeholder="npr. #1" />
+                {/* <input id="suffix_input" type="text" value={formData.suffix ?? ""} onChange={(e) => handleChange("suffix", e.target.value)} placeholder="npr. #1" /> */}
+                <input id="suffix_input" type="text" value={formData.suffix ?? ""} onChange={(e) => updateSuffix(e.target.value)} placeholder="npr. 1" />
+
+
                 {/* prikaz trenutne vrednosti IDN */}
                 <div style={{ marginTop: "1rem", fontWeight: "bold" }}>IDN: {formData.idn}</div>
 
